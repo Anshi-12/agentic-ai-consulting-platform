@@ -1,0 +1,79 @@
+[
+  {
+    "filename": "datasheet-c78-744088.pdf",
+    "domain": "technology",
+    "organization": "Cisco",
+    "title": "Cisco Catalyst 8300 Series Edge Platforms",
+    "document_type": "technical_datasheet",
+    "year": 2026,
+    "source_url": "https://www.cisco.com/c/en/us/products/collateral/routers/catalyst-8300-series-edge-platforms/datasheet-c78-744088.pdf",
+    "sha256": "080c1fb4ec06d188943ff5d5aea4f24a408fae4f614e9ba08c48a2567865c669",
+    "note": "Datasheet provides technical features; exact replacement compatibility needs model and SKU evidence."
+  },
+  {
+    "filename": "data_sheet-c78-732542.pdf",
+    "domain": "technology",
+    "organization": "Cisco",
+    "title": "Cisco 4000 Family Integrated Services Routers",
+    "document_type": "technical_datasheet",
+    "year": 2026,
+    "source_url": "https://www.cisco.com/c/en/us/products/collateral/routers/4000-series-integrated-services-routers-isr/data_sheet-c78-732542.pdf",
+    "sha256": "c2f839af37bb1313ba0399a546629ac6a04dc69dce0307cce654c1f787d48e3e",
+    "note": "Datasheet provides technical features; exact replacement compatibility needs model and SKU evidence."
+  },
+  {
+    "filename": "datasheet-c78-731632.pdf",
+    "domain": "technology",
+    "organization": "Cisco",
+    "title": "Cisco ASR 1000 Series Aggregation Services Routers",
+    "document_type": "technical_datasheet",
+    "year": 2026,
+    "source_url": "https://www.cisco.com/c/en/us/products/collateral/routers/asr-1000-series-aggregation-services-routers/datasheet-c78-731632.pdf",
+    "sha256": "c27cc68efce178f99e7dec2f140b337c74828ab3059019d4c685f221300cd69a",
+    "note": "Datasheet provides technical features; exact replacement compatibility needs model and SKU evidence."
+  },
+  {
+    "filename": "catalyst-8000v-edge-software-ds.pdf",
+    "domain": "technology",
+    "organization": "Cisco",
+    "title": "Cisco Catalyst 8000V Edge Software",
+    "document_type": "technical_datasheet",
+    "year": 2025,
+    "source_url": "https://www.cisco.com/c/en/us/products/collateral/routers/catalyst-8000v-edge-software/catalyst-8000v-edge-software-ds.pdf",
+    "sha256": "35ae9f89ac2f759eca53f33f1ffdc9f82440cd2e1c587d2282623cf53a4a32ec",
+    "note": "Datasheet provides technical features; exact replacement compatibility needs model and SKU evidence."
+  },
+  {
+    "filename": "agilent.pdf",
+    "domain": "sec",
+    "organization": "Agilent Technologies",
+    "title": "Agilent 2025 definitive proxy statement",
+    "document_type": "sec_def14a_proxy",
+    "year": 2025,
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1090872/000095017025011439/a-20250129.htm",
+    "sha256": "b82894fb65b745d99a4168bbb171bc5f3ce6592a2d18434e8d2d57ca1dc5ca55",
+    "note": "A DEF 14A proxy is NOT Form 10-K"
+  },
+  {
+    "filename": "agient2.pdf",
+    "domain": "sec",
+    "organization": "Agilent Technologies",
+    "title": "Agilent 2026 definitive proxy statement",
+    "document_type": "sec_def14a_proxy",
+    "year": 2026,
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1090872/000119312526040286/a-20260203.htm",
+    "sha256": "2d0b24927bf4831a52b277541f27f1270899856eb038a2d8a7bdb6c8c3673e73",
+    "note": "A DEF 14A proxy is NOT Form 10-K"
+  },
+  {
+    "filename": "agilent3.pdf",
+    "domain": "sec",
+    "organization": "KLA Corporation",
+    "title": "KLA 2024 definitive proxy statement",
+    "document_type": "sec_def14a_proxy",
+    "year": 2024,
+    "source_url": "https://www.sec.gov/Archives/edgar/data/319201/000119312524224794/d849367ddef14a.htm",
+    "sha256": "821e70bbcc57ff2ffdad35f706e1bc1b0c9faba855360b8dc0dc443654c6e415",
+    "note": "A DEF 14A proxy is NOT Form 10-K"
+  }
+]

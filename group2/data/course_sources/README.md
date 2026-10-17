@@ -1,0 +1,1 @@
+Place Agilent.txt, DataSource-Cisco.txt, Google GCP.txt, Clinical.zip, FoodSecurity.zip here and run notebook 09. Optional: upload Cisco and Agilent 2025 SEC annual reports; ingest with domain sec. These source files were NOT provided with this delivery.
