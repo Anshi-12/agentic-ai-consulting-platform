@@ -1,0 +1,88 @@
+{
+  "family": "qa_review",
+  "task": "consulting_qa",
+  "schema": "QAOutput",
+  "note": "Synthetic examples. No real client data.",
+  "examples": [
+    {
+      "id": "qa-grocery-pass",
+      "industry": "Retail - grocery",
+      "difficulty": "easy",
+      "input": {
+        "key_question": "How can the grocer reduce fresh-produce shrink by 25%?",
+        "recommendations": [{"id": "R1", "title": "Introduce dynamic markdowns for produce nearing expiry", "evidence_ids": ["EX-G1"], "confidence": 0.8, "claim_type": "fact"}],
+        "available_evidence_ids": ["EX-G1", "EX-G2"],
+        "financial_metrics": [{"scenario": "Dynamic markdowns", "name": "npv", "value": 1800000}],
+        "deterministic_findings": []
+      },
+      "output": {
+        "verdict": "pass",
+        "addresses_original_problem": true,
+        "issues": [],
+        "low_confidence_findings": [],
+        "requires_human_review": false,
+        "route_to": "none",
+        "additional_research_requests": [],
+        "summary": "The recommendation targets produce shrink directly, cites available evidence, and is consistent with the calculated NPV."
+      }
+    },
+    {
+      "id": "qa-pharma-fail",
+      "industry": "Healthcare - pharmaceutical distribution",
+      "difficulty": "medium",
+      "input": {
+        "key_question": "How can the distributor improve operating margin by 2 points?",
+        "recommendations": [
+          {"id": "R1", "title": "Consolidate two warehouses, saving $9M per year", "evidence_ids": [], "confidence": 0.85, "claim_type": "fact"},
+          {"id": "R2", "title": "Renegotiate carrier contracts", "evidence_ids": ["EX-P2"], "confidence": 0.7, "claim_type": "fact"}
+        ],
+        "available_evidence_ids": ["EX-P1", "EX-P2"],
+        "financial_metrics": [{"scenario": "Warehouse consolidation", "name": "total_cash_flow", "value": 12000000, "note": "over 4 years"}],
+        "deterministic_findings": ["R1 is labelled 'fact' but cites no evidence"]
+      },
+      "output": {
+        "verdict": "fail",
+        "addresses_original_problem": true,
+        "issues": [
+          {"id": "QI1", "severity": "high", "category": "inconsistent_number", "description": "R1 claims $9M annual savings, but calculated total cash flow is $12M over four years (about $3M per year).", "affected_ids": ["R1"], "route_to": "financial", "source": "llm"},
+          {"id": "QI2", "severity": "high", "category": "unsupported_claim", "description": "R1 is presented as fact with high confidence but cites no evidence although EX-P1 exists.", "affected_ids": ["R1"], "route_to": "strategy", "source": "llm"}
+        ],
+        "low_confidence_findings": [],
+        "requires_human_review": false,
+        "route_to": "financial",
+        "additional_research_requests": [],
+        "summary": "R1's savings figure contradicts the calculated scenario and is uncited; re-run financial interpretation, then revise strategy."
+      }
+    },
+    {
+      "id": "qa-utility-escalate",
+      "industry": "Energy - electric utility",
+      "difficulty": "hard",
+      "input": {
+        "key_question": "Should the utility accelerate grid undergrounding in wildfire zones?",
+        "recommendations": [
+          {"id": "R1", "title": "Accelerate undergrounding across all high-risk zones", "evidence_ids": ["EX-E3"], "confidence": 0.75, "claim_type": "fact"},
+          {"id": "R2", "title": "Defer undergrounding and prioritize vegetation management", "evidence_ids": ["EX-E1"], "confidence": 0.7, "claim_type": "fact"}
+        ],
+        "available_evidence_ids": ["EX-E1", "EX-E2", "EX-E3"],
+        "flagged_evidence_ids": ["EX-E3"],
+        "financial_metrics": [],
+        "deterministic_findings": ["EX-E3 was flagged as a possible prompt-injection source"]
+      },
+      "output": {
+        "verdict": "escalate",
+        "addresses_original_problem": true,
+        "issues": [
+          {"id": "QI1", "severity": "critical", "category": "contradiction", "description": "R1 and R2 recommend opposite actions for the same decision without reconciling them.", "affected_ids": ["R1", "R2"], "route_to": "strategy", "source": "llm"},
+          {"id": "QI2", "severity": "critical", "category": "security", "description": "R1 relies solely on EX-E3, which was flagged as a possible injection source and must not be treated as support.", "affected_ids": ["R1", "EX-E3"], "route_to": "research", "source": "llm"},
+          {"id": "QI3", "severity": "medium", "category": "missing_evidence", "description": "No financial metrics were provided for a capital-intensive decision.", "affected_ids": [], "route_to": "financial", "source": "llm"}
+        ],
+        "low_confidence_findings": ["R1 support is compromised"],
+        "requires_human_review": true,
+        "route_to": "research",
+        "additional_research_requests": [{"workstream_id": "WS1", "question": "Find independent evidence on wildfire ignition reduction from undergrounding"}],
+        "summary": "Contradictory recommendations on a high-impact safety decision, one relying on a flagged source. Escalate to a human reviewer and gather independent evidence."
+      }
+    }
+  ]
+}

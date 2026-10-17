@@ -1,0 +1,68 @@
+{
+  "family": "financial",
+  "task": "financial_scenario",
+  "schema": "FinancialInterpretation",
+  "note": "Synthetic examples. Numbers in inputs were produced by deterministic code; outputs only reference them.",
+  "examples": [
+    {
+      "id": "fin-hotel-medium",
+      "industry": "Hospitality - hotel chain",
+      "difficulty": "medium",
+      "input": {
+        "data_available": true,
+        "scenarios": [
+          {"scenario": "Full renovation", "input_value_type": "estimate", "metrics": [{"name": "investment", "value": 24000000}, {"name": "npv", "value": 5100000}, {"name": "payback_years", "value": 5.8}, {"name": "roi", "value": 0.61}]},
+          {"scenario": "Rooms-only refresh", "input_value_type": "estimate", "metrics": [{"name": "investment", "value": 9000000}, {"name": "npv", "value": 4300000}, {"name": "payback_years", "value": 3.4}, {"name": "roi", "value": 0.92}]}
+        ]
+      },
+      "output": {
+        "summary": "Full renovation has the higher calculated NPV ($5.1M vs $4.3M), but the rooms-only refresh pays back faster (3.4 vs 5.8 years) and has higher calculated ROI (92% vs 61%) on less than half the capital.",
+        "preferred_scenario": "Rooms-only refresh",
+        "scenario_comparison": ["Full renovation: NPV $5.1M, payback 5.8 years (calculated from estimates)", "Rooms-only refresh: NPV $4.3M, payback 3.4 years (calculated from estimates)"],
+        "key_drivers": ["Room-rate uplift assumptions", "Size of upfront capital"],
+        "sensitivities": ["The NPV gap of $0.8M is small relative to estimate uncertainty; rate-uplift assumptions dominate"],
+        "caveats": ["All cash flows are management estimates", "Preference assumes capital is constrained"],
+        "data_available": true,
+        "confidence": 0.7
+      }
+    },
+    {
+      "id": "fin-logistics-hard",
+      "industry": "Logistics - warehouse automation",
+      "difficulty": "hard",
+      "input": {
+        "data_available": true,
+        "scenarios": [
+          {"scenario": "Full automation", "input_value_type": "forecast", "metrics": [{"name": "investment", "value": 40000000}, {"name": "npv", "value": -2600000}, {"name": "payback_years", "value": null}, {"name": "irr", "value": 0.081}]},
+          {"scenario": "Partial automation (picking only)", "input_value_type": "forecast", "metrics": [{"name": "investment", "value": 12000000}, {"name": "npv", "value": 3900000}, {"name": "payback_years", "value": 4.1}, {"name": "irr", "value": 0.168}]}
+        ]
+      },
+      "output": {
+        "summary": "Full automation has a negative calculated NPV (-$2.6M) and does not pay back within the forecast horizon; partial automation has a positive calculated NPV ($3.9M) and 4.1-year payback.",
+        "preferred_scenario": "Partial automation (picking only)",
+        "scenario_comparison": ["Full automation: NPV -$2.6M, IRR 8.1%, no payback within horizon (calculated from forecasts)", "Partial automation: NPV $3.9M, IRR 16.8%, payback 4.1 years (calculated from forecasts)"],
+        "key_drivers": ["Labor-cost savings forecast", "Volume growth forecast"],
+        "sensitivities": ["Full automation could turn positive if volume growth exceeds the forecast; this was not modeled and should be tested"],
+        "caveats": ["Inputs are forecasts, so all derived metrics inherit forecast uncertainty", "No sensitivity analysis was run by the data module"],
+        "data_available": true,
+        "confidence": 0.65
+      }
+    },
+    {
+      "id": "fin-no-data",
+      "industry": "Healthcare - medical supplies distribution",
+      "difficulty": "ambiguous",
+      "input": {"data_available": false, "scenarios": [], "tool_error": "LookupError: no financial inputs available from the data module"},
+      "output": {
+        "summary": "No financial inputs were available, so ROI, payback and NPV were not calculated. Any financial statements about the options would be unsupported.",
+        "preferred_scenario": null,
+        "scenario_comparison": [],
+        "key_drivers": [],
+        "sensitivities": [],
+        "caveats": ["Request scenario cash flows, investment estimates and baseline P&L from the client", "Strategy should treat financial impact as unquantified"],
+        "data_available": false,
+        "confidence": 0.15
+      }
+    }
+  ]
+}

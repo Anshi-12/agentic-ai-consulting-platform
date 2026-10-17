@@ -1,0 +1,120 @@
+{
+  "family": "problem_statement",
+  "task": "client_discovery",
+  "schema": "DiscoveryOutput",
+  "note": "Synthetic examples. No real client data.",
+  "examples": [
+    {
+      "id": "ps-hospital-medium",
+      "industry": "Healthcare - hospital network",
+      "difficulty": "medium",
+      "input": {
+        "client_name": "Lakeside Health (synthetic)",
+        "brief": "Our three-hospital network has emergency department wait times averaging 4.6 hours, well above the state median of 2.9 hours. Patient satisfaction scores dropped 12 points this year and two payers have raised concerns. The board wants a plan within one quarter that does not require new construction. Nursing staff are already stretched.",
+        "project_context": {"industry": "Healthcare", "annual_revenue_usd": 900000000}
+      },
+      "output": {
+        "status": "complete",
+        "problem_statement": {
+          "summary": "Lakeside Health's emergency departments average 4.6-hour waits versus a 2.9-hour state median, contributing to a 12-point satisfaction drop and payer concern.",
+          "key_question": "How can Lakeside Health reduce ED wait times toward the state median within 12 months without new construction or added strain on nursing staff?",
+          "business_objectives": ["Reduce average ED wait time toward the state median", "Recover patient satisfaction scores", "Address payer concerns"],
+          "constraints": ["No new construction", "Plan required within one quarter", "Nursing capacity is already stretched"],
+          "stakeholders": [
+            {"role": "Board of directors", "interest": "Quality and reputation", "influence": "high"},
+            {"role": "Chief Nursing Officer", "interest": "Staff workload and safety", "influence": "high"},
+            {"role": "Payer relations", "interest": "Contract renewals", "influence": "medium"}
+          ],
+          "success_metrics": [
+            {"metric": "Average ED wait time", "target": "Under 3.5 hours", "timeframe": "12 months"},
+            {"metric": "Patient satisfaction score", "target": "Recover the 12-point decline", "timeframe": "18 months"}
+          ]
+        },
+        "engagement_scope": {
+          "in_scope": ["ED patient flow diagnostic", "Bed management and discharge process", "Staffing model options"],
+          "out_of_scope": ["Facility expansion", "Clinical protocol changes"],
+          "deliverables": ["Flow diagnostic", "Prioritized interventions", "Implementation plan"],
+          "estimated_duration_weeks": 10
+        },
+        "missing_information": [
+          {"item": "Hourly arrival and boarding data by site", "why_needed": "Locate bottlenecks", "priority": "high"},
+          {"item": "Payer contract terms tied to quality metrics", "why_needed": "Quantify financial exposure", "priority": "medium"}
+        ],
+        "clarifying_questions": [],
+        "assumptions": ["Wait time is measured door-to-provider consistently across sites"],
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "ps-saas-complex",
+      "industry": "Software - B2B SaaS",
+      "difficulty": "hard",
+      "input": {
+        "client_name": "Ledgerly (synthetic)",
+        "brief": "We sell accounting software to small firms. Net revenue retention fell from 112% to 96% over 18 months. Sales says the product lacks features; product says sales oversells to the wrong customers; customer success says onboarding is understaffed. We need to know what is really driving churn and what to fix first, ahead of a fundraising round in nine months. Engineering capacity is fixed for the next two quarters.",
+        "project_context": {"industry": "Software", "annual_recurring_revenue_usd": 38000000}
+      },
+      "output": {
+        "status": "complete",
+        "problem_statement": {
+          "summary": "Ledgerly's net revenue retention fell from 112% to 96% in 18 months, with internal teams offering conflicting explanations (feature gaps, poor-fit customers, under-resourced onboarding).",
+          "key_question": "Which drivers explain Ledgerly's retention decline, and which fixes will most improve net revenue retention before the fundraising round in nine months, given fixed engineering capacity?",
+          "business_objectives": ["Identify root causes of churn and contraction", "Prioritize fixes by retention impact", "Present a credible retention story to investors"],
+          "constraints": ["Engineering capacity fixed for two quarters", "Nine-month horizon to fundraising"],
+          "stakeholders": [
+            {"role": "CEO", "interest": "Fundraising narrative", "influence": "high"},
+            {"role": "VP Sales", "interest": "Pipeline and quotas", "influence": "medium"},
+            {"role": "VP Product", "interest": "Roadmap priorities", "influence": "medium"},
+            {"role": "Head of Customer Success", "interest": "Onboarding resources", "influence": "medium"}
+          ],
+          "success_metrics": [
+            {"metric": "Net revenue retention", "target": "Back above 105%", "timeframe": "9 months"},
+            {"metric": "90-day logo churn of new customers", "target": "Halve current rate", "timeframe": "6 months"}
+          ]
+        },
+        "engagement_scope": {
+          "in_scope": ["Churn driver analysis by cohort and segment", "Ideal customer profile review", "Onboarding process assessment"],
+          "out_of_scope": ["Pricing redesign", "Fundraising advisory"],
+          "deliverables": ["Churn driver diagnostic", "Prioritized fix list", "Retention KPI dashboard specification"],
+          "estimated_duration_weeks": 6
+        },
+        "missing_information": [
+          {"item": "Customer-level churn and contraction data with acquisition source", "why_needed": "Test the oversell hypothesis", "priority": "high"},
+          {"item": "Onboarding completion and time-to-value data", "why_needed": "Test the onboarding hypothesis", "priority": "high"},
+          {"item": "Churn reason codes or exit survey results", "why_needed": "Test the feature-gap hypothesis", "priority": "medium"}
+        ],
+        "clarifying_questions": [],
+        "assumptions": ["Conflicting internal explanations are hypotheses to test, not established facts"],
+        "confidence": 0.7
+      }
+    },
+    {
+      "id": "ps-ambiguous-clarify",
+      "industry": "Unspecified",
+      "difficulty": "ambiguous",
+      "input": {
+        "client_name": "Unnamed prospect",
+        "brief": "We want to use AI to grow the business. What should we do?",
+        "project_context": {}
+      },
+      "output": {
+        "status": "needs_clarification",
+        "problem_statement": null,
+        "engagement_scope": null,
+        "missing_information": [
+          {"item": "Industry, business model and size", "why_needed": "Opportunities differ completely by context", "priority": "high"},
+          {"item": "Definition of growth (revenue, margin, customers, markets)", "why_needed": "Determines objectives and success metrics", "priority": "high"},
+          {"item": "Budget, timeline and existing data or technology assets", "why_needed": "Bounds feasible options", "priority": "medium"}
+        ],
+        "clarifying_questions": [
+          "What does your business sell, to whom, and roughly how large is it?",
+          "What kind of growth matters most: revenue, profitability, new customers, or new markets? Is there a target?",
+          "What budget and timeline are you working with, and what customer or operational data do you already collect?",
+          "Is there a specific problem (for example slow sales cycles or high support costs) that prompted this question?"
+        ],
+        "assumptions": [],
+        "confidence": 0.2
+      }
+    }
+  ]
+}

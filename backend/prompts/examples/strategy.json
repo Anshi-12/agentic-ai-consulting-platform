@@ -1,0 +1,95 @@
+{
+  "family": "strategy",
+  "task": "strategy",
+  "schema": "StrategyOutput",
+  "note": "Synthetic examples. No real client data.",
+  "examples": [
+    {
+      "id": "st-telecom-medium",
+      "industry": "Telecommunications - mobile operator",
+      "difficulty": "medium",
+      "input": {
+        "problem_statement": {"key_question": "How can the operator cut prepaid-to-postpaid churn by a third within a year?"},
+        "hypothesis_evaluations": [
+          {"hypothesis_id": "H1", "verdict": "supported", "evidence_ids": ["EX-T1"], "confidence": 0.8},
+          {"hypothesis_id": "H2", "verdict": "supported", "evidence_ids": ["EX-T2"], "confidence": 0.7}
+        ],
+        "evidence": [
+          {"evidence_id": "EX-T1", "source": "Churn model output (synthetic)", "title": "Churn drivers", "content": "Customers with two or more dropped-call complaints in 30 days churn at 3x the base rate.", "source_type": "dataset", "reliability": 0.9},
+          {"evidence_id": "EX-T2", "source": "Exit survey (synthetic)", "title": "Exit reasons", "content": "41% of churners cite a competitor's bundled streaming offer.", "source_type": "research", "reliability": 0.75}
+        ],
+        "financial_summary": "Network fix NPV $14.2M (calculated); bundle NPV $6.1M (calculated)."
+      },
+      "output": {
+        "decision_criteria": [{"name": "Churn impact", "weight": 0.5}, {"name": "Cost", "weight": 0.3}, {"name": "Speed", "weight": 0.2}],
+        "options": [
+          {"id": "OPT1", "title": "Targeted network quality fixes", "description": "Prioritize cell sites driving dropped-call complaints among high-value customers.", "costs": "Capex on targeted sites", "benefits": "Removes the strongest churn driver", "risks": ["Site permitting delays"], "dependencies": [], "scores": {"Churn impact": 5, "Cost": 3, "Speed": 3}, "evidence_ids": ["EX-T1"]},
+          {"id": "OPT2", "title": "Streaming bundle offer", "description": "Partner with a streaming service to match competitor bundles.", "costs": "Content partnership fees", "benefits": "Neutralizes the most cited exit reason", "risks": ["Margin dilution"], "dependencies": [], "scores": {"Churn impact": 4, "Cost": 3, "Speed": 4}, "evidence_ids": ["EX-T2"]}
+        ],
+        "recommendations": [
+          {"id": "R1", "title": "Launch targeted network fixes for top complaint clusters", "rationale": "Complaint-heavy customers churn at 3x the base rate [EX-T1]; the calculated NPV is the higher of the two options.", "option_id": "OPT1", "priority": 1, "owner": "CTO", "time_horizon": "3-12 months", "measurable_outcomes": [{"metric": "Churn among complaint cohort", "target": "-40%", "timeframe": "12 months"}], "evidence_ids": ["EX-T1"], "claim_type": "fact", "confidence": 0.8, "low_confidence_flag": false},
+          {"id": "R2", "title": "Pilot a streaming bundle in two regions", "rationale": "41% of churners cite competitor bundles [EX-T2]; pilot first because margin impact is uncertain.", "option_id": "OPT2", "priority": 2, "owner": "Chief Marketing Officer", "time_horizon": "0-3 months", "measurable_outcomes": [{"metric": "Pilot-region churn vs control", "target": "-15%", "timeframe": "6 months"}], "evidence_ids": ["EX-T2"], "claim_type": "fact", "confidence": 0.7, "low_confidence_flag": false}
+        ],
+        "trade_offs": ["Network fixes are slower but address root cause; bundles are fast but dilute margin"],
+        "assumptions": ["Exit survey respondents are representative of all churners"]
+      }
+    },
+    {
+      "id": "st-university-hard",
+      "industry": "Higher education - private university",
+      "difficulty": "hard",
+      "input": {
+        "problem_statement": {"key_question": "How can the university stabilize undergraduate enrollment, down 14% in five years, without cutting academic quality?"},
+        "hypothesis_evaluations": [
+          {"hypothesis_id": "H1", "verdict": "supported", "evidence_ids": ["EX-U1"], "confidence": 0.75},
+          {"hypothesis_id": "H2", "verdict": "refuted", "evidence_ids": ["EX-U2"], "confidence": 0.7},
+          {"hypothesis_id": "H3", "verdict": "inconclusive", "evidence_ids": [], "confidence": 0.35}
+        ],
+        "evidence": [
+          {"evidence_id": "EX-U1", "source": "Admissions funnel data (synthetic)", "title": "Yield by aid offer", "content": "Admitted students offered aid packages below peer median enrolled at 18% versus 34% above the median.", "source_type": "dataset", "reliability": 0.9},
+          {"evidence_id": "EX-U2", "source": "Program demand study (synthetic)", "title": "Program interest", "content": "Applications to flagship programs are stable; declines are concentrated in undeclared applicants.", "source_type": "research", "reliability": 0.8}
+        ],
+        "financial_summary": "Not provided."
+      },
+      "output": {
+        "decision_criteria": [{"name": "Enrollment impact", "weight": 0.45}, {"name": "Net tuition revenue", "weight": 0.35}, {"name": "Quality protection", "weight": 0.2}],
+        "options": [
+          {"id": "OPT1", "title": "Rebalance financial aid toward yield-sensitive admits", "description": "Shift aid budget so offers for target segments reach peer median.", "costs": "Higher discount rate on targeted admits", "benefits": "Directly addresses the yield gap", "risks": ["Net tuition per student falls"], "dependencies": [], "scores": {"Enrollment impact": 5, "Net tuition revenue": 3, "Quality protection": 4}, "evidence_ids": ["EX-U1"]},
+          {"id": "OPT2", "title": "Launch exploratory first-year pathway for undeclared applicants", "description": "Structured exploration program to attract undecided students.", "costs": "Advising and curriculum design", "benefits": "Targets the segment where declines concentrate", "risks": ["Demand untested"], "dependencies": [], "scores": {"Enrollment impact": 3, "Net tuition revenue": 3, "Quality protection": 5}, "evidence_ids": ["EX-U2"]}
+        ],
+        "recommendations": [
+          {"id": "R1", "title": "Reallocate aid to lift offers for yield-sensitive admits to peer median", "rationale": "Yield is 16 points lower for below-median offers [EX-U1].", "option_id": "OPT1", "priority": 1, "owner": "VP Enrollment Management", "time_horizon": "0-3 months", "measurable_outcomes": [{"metric": "Yield on targeted admits", "target": "+8 points", "timeframe": "Next admissions cycle"}], "evidence_ids": ["EX-U1"], "claim_type": "fact", "confidence": 0.75, "low_confidence_flag": false},
+          {"id": "R2", "title": "Test demand for an exploratory pathway before committing budget", "rationale": "Declines concentrate in undeclared applicants [EX-U2], but demand for a pathway is unverified (H3 inconclusive).", "option_id": "OPT2", "priority": 2, "owner": "Provost", "time_horizon": "3-12 months", "measurable_outcomes": [{"metric": "Survey-measured intent among undeclared applicants", "target": ">30% interested", "timeframe": "6 months"}], "evidence_ids": ["EX-U2"], "claim_type": "hypothesis", "confidence": 0.45, "low_confidence_flag": true}
+        ],
+        "trade_offs": ["Aid rebalancing raises enrollment but lowers net tuition per student"],
+        "assumptions": ["No financial model was supplied; revenue effects are directional only"]
+      }
+    },
+    {
+      "id": "st-insufficient-evidence",
+      "industry": "Consumer goods - specialty foods",
+      "difficulty": "ambiguous",
+      "input": {
+        "problem_statement": {"key_question": "Should the company expand into grocery retail or stay direct-to-consumer?"},
+        "hypothesis_evaluations": [
+          {"hypothesis_id": "H1", "verdict": "inconclusive", "evidence_ids": [], "confidence": 0.25},
+          {"hypothesis_id": "H2", "verdict": "inconclusive", "evidence_ids": [], "confidence": 0.25}
+        ],
+        "evidence": [],
+        "financial_summary": "Financial inputs not available."
+      },
+      "output": {
+        "decision_criteria": [{"name": "Growth potential", "weight": 0.5}, {"name": "Margin impact", "weight": 0.3}, {"name": "Reversibility", "weight": 0.2}],
+        "options": [
+          {"id": "OPT1", "title": "Run a limited grocery pilot", "description": "Place products in a small number of stores to gather sell-through data.", "costs": "Slotting fees and trade spend (unquantified)", "benefits": "Generates the missing evidence", "risks": ["Pilot too small to be conclusive"], "dependencies": [], "scores": {"Growth potential": 3, "Margin impact": 3, "Reversibility": 5}, "evidence_ids": []},
+          {"id": "OPT2", "title": "Stay direct-to-consumer and defer the decision", "description": "Focus on DTC while collecting market data.", "costs": "Opportunity cost (unquantified)", "benefits": "Protects current margins", "risks": ["Competitors take shelf space first"], "dependencies": [], "scores": {"Growth potential": 2, "Margin impact": 4, "Reversibility": 4}, "evidence_ids": []}
+        ],
+        "recommendations": [
+          {"id": "R1", "title": "Do not commit to full grocery expansion yet; gather evidence through a time-boxed pilot", "rationale": "No research or financial evidence was returned by the tools, so neither path can be supported. A reversible pilot produces the data needed to decide.", "option_id": "OPT1", "priority": 1, "owner": "Head of Growth", "time_horizon": "0-3 months", "measurable_outcomes": [{"metric": "Weekly sell-through per store", "target": "Defined before pilot launch", "timeframe": "12 weeks"}], "evidence_ids": [], "claim_type": "hypothesis", "confidence": 0.3, "low_confidence_flag": true}
+        ],
+        "trade_offs": ["Speed of entry versus quality of decision"],
+        "assumptions": ["All option assessments are judgment-based because no evidence was available"]
+      }
+    }
+  ]
+}

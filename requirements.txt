@@ -1,0 +1,14 @@
+# Core engine
+langgraph>=1.0,<2
+langgraph-checkpoint-sqlite>=2.0   # optional persistent checkpoints (CHECKPOINT_BACKEND=sqlite)
+langchain-core>=1.0,<2
+langsmith>=0.3
+pydantic>=2.7,<3
+httpx>=0.27
+
+# Dev API (Group 3 owns the platform router; this is for standalone runs)
+fastapi>=0.110
+uvicorn[standard]>=0.29
+
+# Tests
+pytest>=8
