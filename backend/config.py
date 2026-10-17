@@ -86,6 +86,11 @@ class Settings:
     checkpoint_sqlite_path: str = "data/checkpoints.sqlite"
     run_store_path: str = ""  # empty = in-memory run records; else JSON file dir
 
+    # --- hackathon multi-agent consulting ------------------------------------
+    kb_dir: str = "data/index"
+    consult_max_rounds: int = 3
+    consult_require_approval: bool = False
+
     # --- security -----------------------------------------------------------
     injection_policy: str = "quarantine"  # quarantine | flag
     dev_allowed_projects: str = "*"  # DEV ONLY placeholder auth
@@ -105,6 +110,11 @@ class Settings:
 
 
 AGENT_NAMES = (
+    "manager_agent",
+    "technology_agent",
+    "clinical_agent",
+    "sec_agent",
+    "corporate_responsibility_agent",
     "client_discovery",
     "problem_structuring",
     "strategy",
@@ -162,6 +172,9 @@ def load_settings() -> Settings:
         checkpoint_backend=os.getenv("CHECKPOINT_BACKEND", "memory").lower(),
         checkpoint_sqlite_path=os.getenv("CHECKPOINT_SQLITE_PATH", "data/checkpoints.sqlite"),
         run_store_path=os.getenv("RUN_STORE_PATH", ""),
+        kb_dir=os.getenv("KB_DIR", "data/index"),
+        consult_max_rounds=_int("CONSULT_MAX_ROUNDS", 3),
+        consult_require_approval=_bool("CONSULT_REQUIRE_APPROVAL", False),
         injection_policy=os.getenv("INJECTION_POLICY", "quarantine").lower(),
         dev_allowed_projects=os.getenv("DEV_ALLOWED_PROJECTS", "*"),
         langsmith_tracing=tracing,

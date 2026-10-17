@@ -73,3 +73,25 @@ requirements.txt, pyproject.toml, .env.example, .gitignore, .vscode/
 ```
 
 Filename deviations from the spec: none for required files. Added `agents/base.py`, `agents/research.py`, `ai/guardrails.py`, `ai/tracing.py`, `ai/finance.py`, `ai/mock_responses.py`, `prompts/base.py` and `contracts/`.
+
+## Hackathon multi-agent architecture (added)
+
+New modules (all additive; the Group 1 engine is unchanged apart from a `_build_graph` hook and an optional
+`knowledge_base` argument on `WorkflowExecutor`):
+
+```
+backend/rag/                      ingest, BM25/dense index, trial analytics, product recommender
+backend/agents/manager_agent.py   Management Consulting Manager Agent
+backend/agents/domain_agents.py   Technology, Clinical, SEC, Corporate Responsibility agents
+backend/agents/intent_rules.py    rule-based routing baseline / safety net
+backend/orchestration/consulting_graph.py, consulting_execution.py
+backend/recommender/              market basket model + evaluation
+backend/web/                      index, consult and checkout pages
+backend/evaluation/hackathon_eval.py + datasets/{routing,retrieval,product,consult_quality}_cases.jsonl
+scripts/{setup_hackathon_data,fetch_web_sources,ask}.py
+```
+
+API (dev app): `POST /api/v1/consult`, `GET /api/v1/consult/{id}`, `POST /api/v1/consult/{id}/resume`,
+`POST /api/v1/consult/{id}/cancel`, `GET /api/v1/consult/{id}/events`, `GET /api/v1/consult/status`,
+`/api/v1/recommender/{items,recommend,popular,rules,model,feedback,retrain}`. Service-level entry point for other
+groups: `ConsultingExecutor.ask/result/resume/cancel` with a `Principal`.

@@ -1,137 +1,109 @@
-# Consulting AI — Group 1: Agentic AI & Consulting Intelligence
+# Agentic AI Management Consulting Platform (CMPE 256 Hackathon)
 
-Multi-agent consulting engine built on **LangGraph**. Six specialized agents take a client brief through intake, problem framing, parallel research, hypothesis testing, strategy, QA and human approval, and produce an evidence-linked consulting deliverable as structured JSON (plus Markdown).
+A working prototype of the hackathon's multi-agent architecture. A **Management Consulting Manager Agent** detects the customer's intent, routes the request to four specialist agents (**Technology, Clinical, SEC, Corporate Responsibility**), loops until the request is resolved, and consolidates their findings into recommendations. Each recommendation says what to do next, why, and how to measure impact, with citations to the exact document and page.
 
-Runs fully offline in **mock mode** (no API keys), so you can open it in VS Code and run it immediately.
+It also includes the **market basket recommender** for the electronic retailer's checkout. Suggestions update with every item added, and nothing is shown when no real pattern exists.
 
-## Quick start (VS Code)
+Everything runs with your Anthropic API key (live mode) or fully offline (mock mode, no key needed).
+
+## Setup (VS Code)
 
 ```bash
-# 1. Create and activate a virtual environment
 python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-
-# 2. Install dependencies
+source .venv/bin/activate            # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-# 3. (optional) copy the env template — defaults already run in mock mode
-cp .env.example .env               # Windows: copy .env.example .env
+# 1. Put the professor's data in place (unpacks the inner zips too)
+python scripts/setup_hackathon_data.py path/to/Hackathon_export.zip
 
-# 4. Run a full synthetic engagement end to end
-python scripts/run_demo.py
+# 2. (recommended) download the Cisco/Agilent/Google pages the professor listed as links
+python scripts/fetch_web_sources.py
 
-# 5. Run the tests
-pytest
-```
+# 3. Build the knowledge base (~2-4 min; downloads a small embedding model the first time)
+python -m backend.rag.ingest         # add --no-embed for keyword-only retrieval
 
-In VS Code, open the folder, pick the `.venv` interpreter, and use the **Run and Debug** panel: *Demo: full engagement*, *Demo: interactive*, *Demo: QA rework loop*, *API server*, *Evaluation suite*, *Pytest: all*.
+# 4. Add your key: copy .env.example to .env, then set
+#    LLM_PROVIDER_MODE=live and ANTHROPIC_API_KEY=sk-ant-...
+cp .env.example .env                 # Windows: copy .env.example .env
 
-Python 3.11+ required (tested on 3.13).
-
-### Demo variations
-
-| Command | What it shows |
-|---|---|
-| `python scripts/run_demo.py` | Happy path: parallel research, injection quarantine, QA pass, approval, report |
-| `python scripts/run_demo.py --vague` | Clarification gate (agent asks questions instead of inventing facts) |
-| `python scripts/run_demo.py --scenario qa_failure_once` | QA catches a fabricated citation and routes back to strategy |
-| `python scripts/run_demo.py --scenario qa_always_fail` | QA exhausts rework budget and escalates to a human (never self-approves) |
-| `python scripts/run_demo.py --project proj-medisupply` | Thin evidence, no financial data — nothing is calculated or claimed |
-| `python scripts/run_demo.py --interactive` | You answer clarifications and make the approval decision |
-| `python scripts/run_demo.py --reject` | Rejection at the approval gate |
-
-Outputs land in `outputs/<execution_id>/` (`report.md`, `report.json`, `outputs.json`, `events.json`).
-
-### Dev API
-
-```bash
+# 5. Run the app
 uvicorn backend.api.app:app --reload
-# open http://127.0.0.1:8000/docs
 ```
 
-Endpoints: `POST /api/v1/workflows`, `GET /{id}`, `GET /{id}/outputs`, `POST /{id}/resume`, `POST /{id}/retry`, `POST /{id}/cancel`, `GET /{id}/recommendations`, `GET /{id}/events`, `WS /ws/workflows/{id}`. This app is for standalone runs only — Group 3 owns the platform router and should call `backend/api/service.py` (see `INTEGRATION.md`).
+Open **http://127.0.0.1:8000**:
+- `/consult`: ask a question and watch the task ledger fill as agents work. The final recommendation shows confidence, sources and per-agent uncertainty.
+- `/checkout`: the market basket checkout page.
+- `/docs`: the API.
 
-### Live models
+Terminal alternative: `python scripts/ask.py "your question"`. VS Code's Run and Debug panel has numbered launch configs for each step.
 
-Set in `.env`:
-
-```
-LLM_PROVIDER_MODE=live
-MODEL_PRIMARY=anthropic:claude-opus-5-5
-MODEL_LIGHT=anthropic:claude-haiku-5-5
-MODEL_SYNTHESIS=anthropic:claude-sonnet-5-5
-MODEL_FALLBACK=openai:<model-id>
-ANTHROPIC_API_KEY=...
-OPENAI_API_KEY=...
-```
-
-Any role left unset inherits `MODEL_PRIMARY`. `OPENAI_BASE_URL` lets the OpenAI adapter talk to any OpenAI-compatible server.
+Python 3.11+ (tested on 3.13). Tests: `pytest` (153 tests, no data or key needed).
 
 ## Architecture
 
 ```
-intake ─► clarification (human) ─► intake
-  │
-problem_framing ─► work_plan ═► research_task × N ┐  parallel, dependency-ordered waves
-                             ═► financial_analysis ┘
-                                      │
-                      hypothesis_evaluation ─► strategy ─► qa
-                                                  ▲         │ fail → back to research / financial / strategy / framing
-                                                  └─────────┤
-                                                            ▼
-                              human_approval (always a human; escalation if QA keeps failing)
-                                 approve → synthesis → finalize   revise → strategy   reject → end
+                  Management Consulting Manager Agent
+       intent detection → routing plan → task & progress ledger
+                │            │            │               │        (parallel)
+           Technology     Clinical       SEC      Corporate Responsibility
+         Cisco/Google   Agilent, 20     Cisco, Agilent,   SOFI 2023 & 2024
+         datasheets     papers, 32k     Alphabet 10-Ks    (FAO food security)
+                        trials
+                └────────────┴─────┬──────┴───────────────┘
+                     "Is the request resolved?"  ── no ──► follow-up tasks (≤3 rounds)
+                                   │                       or ask the human participant
+                                  yes
+                                   ▼
+          Consulting recommendation: next actions · metrics · evidence · confidence
 ```
 
-| Agent | File | Model role | Key guardrail |
-|---|---|---|---|
-| Client Discovery | `agents/client_discovery_agent.py` | light (classify) + primary | Asks clarifying questions when the brief can't be scoped |
-| Problem Structuring | `agents/problem_structuring_agent.py` | primary | Hypotheses validated against workstreams; "supported" without valid evidence is downgraded |
-| Strategy | `agents/strategy_agent.py` | primary | Weighted scores recomputed in code; uncited / low-confidence recs flagged |
-| Financial & Scenario | `agents/financial_scenario_agent.py` | synthesis | All numbers from `ai/finance.py`; narrative figures checked against calculated values |
-| Consulting QA | `agents/consulting_qa_agent.py` | primary | Deterministic checks (fabricated citations via tool, flagged sources, unsupported facts, number mismatches) can only tighten the LLM verdict |
-| Report Synthesis | `agents/report_synthesis_agent.py` | synthesis | Approved recommendations restored verbatim; citations rebuilt from verified evidence |
+| Brief requirement | Where it is |
+|---|---|
+| Manager classifies and routes | `agents/manager_agent.py` (LLM routing with multi-shot examples), `agents/intent_rules.py` (rule baseline and safety net) |
+| Orchestration loop, ledger, human participant | `orchestration/consulting_graph.py` (LangGraph: parallel `Send` fan-out, progress check, `interrupt()` for human input) |
+| Domain knowledge bases | `rag/ingest.py` builds per-domain indexes from the PDFs, trial CSVs and link lists |
+| RAG with citations | `rag/index.py` (BM25 + dense embeddings, fused with RRF); `agents/domain_agents.py` cites every claim by passage ID and page |
+| Recommendation system | `rag/catalog_recommender.py` (matches needs to Cisco/Agilent products); `recommender/model.py` (market basket) |
+| Cross-domain reasoning | Manager splits multi-domain questions into parallel tasks and merges findings (`cross_domain_insights`) |
+| Explainability and confidence | Per agent: retrieval strength, groundedness, model confidence, final confidence and level. Fact vs hypothesis labels; invented citations removed and counted |
+| Evaluation | `evaluation/hackathon_eval.py`: routing accuracy, retrieval accuracy, recommendation relevance, response quality |
+| Business value | Every action has why, expected impact, metric, target, timeframe and owner |
 
-Research tasks (`agents/research.py`) are tool-driven retrieval from the data module — no LLM.
+How each agent stays grounded:
+- **Own knowledge only.** Every agent can search only its own knowledge base; tool allowlists enforce this.
+- **Smart filters.** The SEC agent filters by the company named in the question. The Corporate Responsibility agent filters by report year. The Clinical agent computes trial counts in code; they are never generated by the model.
+- **Code-level checks.** Evidence IDs the model invents are stripped. A "fact" with no citation is downgraded to a hypothesis. Confidence is capped by how strong the retrieved evidence actually was.
+- **Injection defence.** Retrieved text is scanned for prompt injection before any model sees it.
 
-### Repository layout
+## Evaluation results (offline mode, keyword retrieval)
 
-```
-backend/
-  agents/          six agents + research runner
-  orchestration/   graph.py, state.py, routing.py, checkpoints.py, execution.py
-  prompts/         prompt templates per family + examples/ (6 families × 3 synthetic examples)
-  ai/              model_router.py, provider_factory.py, tools.py, structured_outputs.py,
-                   guardrails.py, tracing.py, finance.py, mock_responses.py
-  api/             service.py (for Group 3), models.py, app.py (dev only)
-  contracts/       PLACEHOLDER shared schemas, events, persistence, auth, data module
-  evaluation/      datasets/, metrics.py, run_eval.py
-  fixtures/        synthetic projects (NorthPeak Outdoor, MediSupply Regional)
-  tests/           116 tests, all offline
-scripts/run_demo.py
-```
+Run `python -m backend.evaluation.hackathon_eval`. This writes `backend/evaluation/results/hackathon_report.md`, ready for slides.
 
-## How the requirements are met
+| Metric | Result |
+|---|---|
+| Routing exact-match (30 labelled questions, incl. brief + professor prompts) | 93% (cross-domain 80%, clarification 100%) |
+| Retrieval hit@1 / hit@3 (24 paraphrased questions, ground truth verified in source) | 92% / 100% |
+| Retrieval hit@3 without company/year filters | 92% (the filters matter) |
+| Product/instrument matching hit@1 (6 needs) | 100% |
+| End-to-end consultations (8): success / routing / citation validity | 100% / 100% / 100% |
+| Market basket checkout next-item hit@5 vs popularity baseline | 13.0% vs 13.1% |
 
-**Orchestration** — typed `ConsultingState` with reducers for parallel writes; conditional routing; `Send`-based parallel fan-out with dependency waves; LangGraph `RetryPolicy` (bounded, exponential, jitter) per node; per-agent timeouts; cancellation checked at every stage boundary; `interrupt()` human gates for clarification and approval; checkpointed state (`memory` or `sqlite`) so failed runs resume from the last checkpoint via `retry`; execution IDs, timestamps, and structured events for every stage, tool call, model call, routing decision, QA result and security flag.
+**Finding about the retail data.** The market basket data has no detectable co-purchase structure. The strongest product pair appears 16 times, versus 13–18 times in randomly shuffled baskets (p = 0.23). So no algorithm can meaningfully beat "recommend popular items" on this file. The recommender handles this honestly: every suggestion shows its lift, p-value and an evidence-strength label (all "weak" here), and nothing is shown when no item beats chance. `python -m backend.recommender.evaluate --tune` reproduces this, including the signal test.
 
-**Prompting** — every prompt has role, objective, security rules, constraints, schema, validation criteria and abstention rules (`prompts/base.py`). Examples are injected as real user/assistant turns; tests assert they reach the model.
+Offline answers quote retrieved passages verbatim, so groundedness is trivially 100%. Re-run the evaluation with `LLM_PROVIDER_MODE=live` to measure model-written answers; it then also reports LLM routing accuracy next to the rule baseline.
 
-**Model routing** — primary / light / synthesis / fallback from env; Anthropic and OpenAI adapters over httpx; retries with capped equal-jitter backoff on retryable errors; one schema-repair turn on invalid output; fallback on recoverable failures; normalized `ProviderError` kinds.
+## Data notes
 
-**Evidence discipline** — tools are the only way to get research, documents, numbers, context or workflow state. Prompts receive the tool execution log. QA verifies every cited ID through `get_evidence_by_ids`.
+- **Technology data is mostly links.** The export provides URLs, not Cisco datasheets. `fetch_web_sources.py` downloads them on your machine, then re-run ingest. Without it, the Technology agent knows only product names and short descriptions, and says so.
+- **No IBM documents were provided.** Add any to `data/hackathon/extra_sources.txt` (`technology | IBM | name | url`) and re-run the fetch and ingest steps.
+- **Data stays out of the zip.** The professor's files and the built index live in `data/`, which is not included in the zip.
 
-**Security** — untrusted text is escaped and wrapped in `<untrusted_evidence>` in the user turn, never the system turn; injection heuristics quarantine suspicious sources; per-agent tool allowlists, Pydantic argument validation, cross-project / cross-workflow denial, per-agent and per-run tool budgets; no shell, filesystem or SQL tools exist; secrets redacted from logs and traces; approver role required to release deliverables.
+## Also included: Group 1 consulting engine
 
-**Observability** — LangSmith via `LANGSMITH_TRACING` / `LANGSMITH_API_KEY` / `LANGSMITH_PROJECT`. LangGraph traces nodes automatically; explicit spans cover model calls, tool calls and nodes, with input/output processors that strip secrets and (unless `TRACE_ALLOW_CLIENT_DATA=true`) replace client content with size/hash summaries.
-
-**Evaluation** — `python -m backend.evaluation.run_eval` runs 6 synthetic cases and reports recommendation relevance, evidence coverage, schema validity, unsupported-claim rate, workflow success, clarification/financial/escalation correctness, tokens and latency. `--upload-langsmith` pushes the dataset to LangSmith.
+The original Group 1 spec is still here and tested: a six-agent engagement workflow (discovery → structuring → research → strategy → QA → approval → report). Run it with `python scripts/run_demo.py`; `INTEGRATION.md` covers the shared-repo hand-off. Both workflows share the same model router, guardrails, tools, tracing and approval machinery.
 
 ## Known limitations
 
-- `backend/contracts/` is a placeholder until the shared repo exists. See `INTEGRATION.md`.
-- Mock-mode outputs are template-based; they exercise the pipeline, not consulting quality. Judge quality in live mode.
-- Tool calls are orchestrated by agent code (deterministic, allowlisted), not chosen freely by the model. This is deliberate for safety; model-selected tool calling can be added behind the same `ToolSession`.
-- Timeouts stop waiting on a slow agent but cannot kill a running Python thread; the late result is discarded.
-- The per-run tool budget is approximate across parallel branches (each branch sees the count at dispatch time).
-- `recommendation_relevance` is lexical; add an LLM-as-judge evaluator in LangSmith for semantic scoring.
+- Keyword retrieval misses paraphrases; dense embeddings fix most of this. If the embedding model can't download, the app falls back to keywords and shows "BM25 keyword" in the page header.
+- Offline mode (no key) gives extractive answers that are grounded but read awkwardly. Use live mode for the demo.
+- Product matching is only as good as the catalog text. Run the fetch script so datasheet text is indexed.

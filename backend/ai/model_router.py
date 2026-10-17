@@ -45,6 +45,11 @@ TASK_ROLES: dict[str, str] = {
     "financial_scenario": "synthesis",
     "consulting_qa": "primary",
     "report_synthesis": "synthesis",
+    # hackathon multi-agent architecture
+    "manager_plan": "primary",
+    "progress_check": "light",
+    "domain_answer": "synthesis",
+    "consolidate": "primary",
 }
 
 

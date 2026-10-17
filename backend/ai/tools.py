@@ -81,6 +81,47 @@ class SubmitForReviewArgs(_Args):
     severity: Literal["routine", "high_impact"] = "routine"
 
 
+DomainName = Literal["technology", "clinical", "sec", "corporate_responsibility"]
+
+
+class SearchKnowledgeBaseArgs(_Args):
+    domain: DomainName
+    query: str = Field(min_length=2, max_length=300)
+    top_k: int = Field(default=6, ge=1, le=12)
+    company: str | None = Field(default=None, max_length=40, pattern=r"^[A-Za-z0-9 &.-]+$")
+    year: int | None = Field(default=None, ge=1990, le=2100)
+    topic: str | None = Field(default=None, max_length=40)
+
+    @field_validator("query")
+    @classmethod
+    def _validate_query(cls, v: str) -> str:
+        return _clean_query(v)
+
+
+class ClinicalTrialsArgs(_Args):
+    query: str = Field(min_length=2, max_length=300)
+    topic: Literal["COVID-19", "Diabetes", "Heart attack", "Knee injuries"] | None = None
+    status: str | None = Field(default=None, pattern=r"^[A-Z_]{3,30}$")
+    phase: Literal["PHASE1", "PHASE2", "PHASE3", "PHASE4"] | None = None
+    top_k: int = Field(default=5, ge=1, le=10)
+
+    @field_validator("query")
+    @classmethod
+    def _validate_query(cls, v: str) -> str:
+        return _clean_query(v)
+
+
+class RecommendProductsArgs(_Args):
+    domain: Literal["technology", "clinical"]
+    need: str = Field(min_length=2, max_length=500)
+    top_k: int = Field(default=5, ge=1, le=10)
+
+    @field_validator("need")
+    @classmethod
+    def _validate_need(cls, v: str) -> str:
+        return _clean_query(v)
+
+
 class EvidenceByIdArgs(_Args):
     project_id: str = Field(pattern=_ID)
     evidence_ids: list[str] = Field(min_length=1, max_length=50)
@@ -145,6 +186,9 @@ TOOL_SPECS: dict[str, type[_Args]] = {
     "check_workflow_state": WorkflowStateArgs,
     "submit_for_review": SubmitForReviewArgs,
     "get_evidence_by_ids": EvidenceByIdArgs,
+    "search_knowledge_base": SearchKnowledgeBaseArgs,
+    "query_clinical_trials": ClinicalTrialsArgs,
+    "recommend_products": RecommendProductsArgs,
 }
 
 AGENT_TOOL_ALLOWLIST: dict[str, set[str]] = {
@@ -156,6 +200,20 @@ AGENT_TOOL_ALLOWLIST: dict[str, set[str]] = {
     "consulting_qa": {"get_evidence_by_ids", "check_workflow_state", "submit_for_review"},
     "report_synthesis": {"get_evidence_by_ids", "read_project_context", "submit_for_review"},
     "orchestrator": {"check_workflow_state", "submit_for_review"},
+    # Hackathon multi-agent architecture: each domain agent may only search its own knowledge.
+    "technology_agent": {"search_knowledge_base", "recommend_products"},
+    "clinical_agent": {"search_knowledge_base", "query_clinical_trials", "recommend_products"},
+    "sec_agent": {"search_knowledge_base"},
+    "corporate_responsibility_agent": {"search_knowledge_base"},
+    "manager_agent": {"check_workflow_state", "submit_for_review"},
+}
+
+# Domain each hackathon agent is confined to (enforced on every knowledge-base call).
+AGENT_DOMAIN: dict[str, str] = {
+    "technology_agent": "technology",
+    "clinical_agent": "clinical",
+    "sec_agent": "sec",
+    "corporate_responsibility_agent": "corporate_responsibility",
 }
 
 
@@ -171,7 +229,8 @@ class ToolContext:
 class ToolExecutor:
     def __init__(self, data_module: DataModuleClient, store: WorkflowStore, review_queue: ReviewQueue,
                  max_calls_per_agent: int = 12, max_calls_per_run: int = 80, injection_policy: str = "quarantine",
-                 on_call: Callable[[ToolCallRecord, ToolContext], None] | None = None):
+                 on_call: Callable[[ToolCallRecord, ToolContext], None] | None = None, knowledge_base: Any = None):
+        self.kb = knowledge_base
         self.data = data_module
         self.store = store
         self.reviews = review_queue
@@ -205,6 +264,8 @@ class ToolExecutor:
             return {"currency": inputs.get("currency", "USD"),
                     "scenarios": [s.model_dump(mode="json") for s in scenarios],
                     "calculation_log": calc_log}, []
+        if name in {"search_knowledge_base", "query_clinical_trials", "recommend_products"}:
+            return self._run_kb(name, args, ctx)
         if name == "check_workflow_state":
             if args.execution_id != ctx.execution_id:
                 raise ToolDenied("cross-workflow access", name)
@@ -219,6 +280,45 @@ class ToolExecutor:
                                        "severity": args.severity, "submitted_by": ctx.agent})
             return {"review_id": rid}, []
         raise ToolDenied("not implemented", name)  # pragma: no cover
+
+
+    def _run_kb(self, name: str, args: _Args, ctx: ToolContext) -> tuple[Any, list[dict[str, Any]]]:
+        if self.kb is None:
+            raise LookupError("knowledge base not built; run `python -m backend.rag.ingest`")
+        own = AGENT_DOMAIN.get(ctx.agent)
+        requested = getattr(args, "domain", None) or ("clinical" if name == "query_clinical_trials" else None)
+        if own and requested and requested != own:
+            raise ToolDenied(f"agent '{ctx.agent}' may only use the '{own}' knowledge base", name)
+        if name == "search_knowledge_base":
+            filters = {k: v for k, v in {"company": args.company, "year": args.year, "topic": args.topic}.items() if v}
+            hits = self.kb.search_domain(args.domain, args.query, args.top_k, filters or None)
+            if not hits and filters:  # filter too strict -> say so and fall back to unfiltered search
+                hits = self.kb.search_domain(args.domain, args.query, args.top_k)
+            return self._sanitize_kb([h.to_evidence() for h in hits])
+        if name == "query_clinical_trials":
+            from backend.rag.trials import query_trials
+
+            out = query_trials(self.kb, args.query, args.topic, args.status, args.phase, args.top_k)
+            out["matching_trials"], flags = self._sanitize_kb(out["matching_trials"])
+            return out, flags
+        from backend.rag.catalog_recommender import recommend_products
+
+        return recommend_products(self.kb, args.need, args.domain, args.top_k), []
+
+    def _sanitize_kb(self, items: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+        """Knowledge-base text is external content: scan it for injection like any other evidence."""
+        from backend.ai.guardrails import QUARANTINE_TEXT, detect_injection
+
+        flags = []
+        for it in items:
+            hits = detect_injection(it.get("text", ""))
+            if hits:
+                flags.append({"evidence_id": it["evidence_id"], "source": it.get("source"), "patterns": hits,
+                              "action": self.injection_policy})
+                it["injection_suspected"] = True
+                if self.injection_policy == "quarantine":
+                    it["text"] = QUARANTINE_TEXT
+        return items, flags
 
 
 class ToolSession:
@@ -252,6 +352,8 @@ class ToolSession:
             except ValidationError as exc:
                 raise ToolDenied(f"invalid arguments: {exc.errors()[0].get('msg')}", tool) from exc
             pid = getattr(args, "project_id", None)
+            if pid is None and tool in {"search_knowledge_base", "query_clinical_trials", "recommend_products"}:
+                authorize_project(self.ctx.principal, self.ctx.project_id, "read")
             if pid is not None:
                 if pid != self.ctx.project_id:
                     raise ToolDenied("cross-project access", tool)

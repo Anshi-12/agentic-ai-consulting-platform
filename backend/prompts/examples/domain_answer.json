@@ -1,0 +1,84 @@
+{
+  "family": "domain_answer",
+  "task": "domain_answer",
+  "schema": "DomainAnswer",
+  "note": "Synthetic examples. Evidence IDs and passages are invented for illustration.",
+  "examples": [
+    {
+      "id": "da-tech-hypotheses",
+      "industry": "High technology - networking",
+      "difficulty": "medium",
+      "input": {
+        "agent": "technology",
+        "instruction": "Identify causes of intermittent connectivity on a Cisco edge router and compatible replacement options.",
+        "product_matches": [{"name": "Cisco Catalyst 8300 Series Edge Platforms", "match_score": 1.0, "catalog_ids": ["EX-P1"]}],
+        "evidence": [
+          {"evidence_id": "EX-T1", "source": "Router datasheet (synthetic)", "title": "Edge router datasheet", "content": "The platform supports redundant power supplies and field-replaceable network interface modules. Environmental limits: 0 to 40 C.", "source_type": "document", "reliability": 0.9},
+          {"evidence_id": "EX-P1", "source": "Catalog (synthetic)", "title": "Catalyst 8300 catalog entry", "content": "Edge platform covering interfaces, IPsec throughput and SD-WAN.", "source_type": "document", "reliability": 0.7}
+        ]
+      },
+      "output": {
+        "answer": "The documentation supports checking field-replaceable interface modules and power supplies first, but no evidence confirms which component failed. Collect interface error counters and environmental logs before ordering parts.",
+        "findings": [
+          {"statement": "Network interface modules and power supplies are field-replaceable on this platform.", "evidence_ids": ["EX-T1"], "claim_type": "fact", "confidence": 0.85},
+          {"statement": "Intermittent drops could stem from a failing interface module or overheating; this is a hypothesis until diagnostics confirm it.", "evidence_ids": ["EX-T1"], "claim_type": "hypothesis", "confidence": 0.45}
+        ],
+        "recommended_items": [
+          {"name": "Spare network interface module for the installed platform", "item_type": "component", "reason": "Field-replaceable and a plausible failure point; order only after error counters confirm.", "evidence_ids": ["EX-T1"], "match_score": null},
+          {"name": "Cisco Catalyst 8300 Series Edge Platforms", "item_type": "product", "reason": "Closest catalog match if the chassis must be replaced.", "evidence_ids": ["EX-P1"], "match_score": 1.0}
+        ],
+        "missing_information": ["Exact router model and software version", "Interface error counters and syslog around drop times", "Operating temperature at the site"],
+        "follow_up_questions": ["Do drops coincide with traffic peaks or temperature changes?"],
+        "insufficient_evidence": false,
+        "confidence": 0.6
+      }
+    },
+    {
+      "id": "da-csr-grounded",
+      "industry": "Corporate social responsibility - food security",
+      "difficulty": "easy",
+      "input": {
+        "agent": "corporate_responsibility",
+        "instruction": "List the major drivers of food insecurity described in the report.",
+        "evidence": [
+          {"evidence_id": "EX-F1", "source": "Food security report (synthetic)", "title": "Report executive summary, p.12", "content": "The major drivers behind recent trends are conflict, climate extremes and economic slowdowns and downturns, compounded by high costs of nutritious foods.", "source_type": "document", "reliability": 0.95}
+        ]
+      },
+      "output": {
+        "answer": "The report names conflict, climate extremes, and economic slowdowns and downturns as the major drivers, compounded by the high cost of nutritious food.",
+        "findings": [
+          {"statement": "Conflict, climate extremes and economic slowdowns/downturns are the major drivers of food insecurity.", "evidence_ids": ["EX-F1"], "claim_type": "fact", "confidence": 0.9},
+          {"statement": "High costs of nutritious foods compound these drivers.", "evidence_ids": ["EX-F1"], "claim_type": "fact", "confidence": 0.85}
+        ],
+        "recommended_items": [],
+        "missing_information": [],
+        "follow_up_questions": [],
+        "insufficient_evidence": false,
+        "confidence": 0.88
+      }
+    },
+    {
+      "id": "da-sec-insufficient",
+      "industry": "Securities - regulatory filings",
+      "difficulty": "ambiguous",
+      "input": {
+        "agent": "sec",
+        "instruction": "What was the company's revenue from quantum computing products in 2025?",
+        "evidence": [
+          {"evidence_id": "EX-S1", "source": "Annual report (synthetic)", "title": "Form 10-K, p.40", "content": "Revenue from the Networking product category decreased by 3%.", "source_type": "document", "reliability": 0.95}
+        ]
+      },
+      "output": {
+        "answer": "The retrieved filing passages do not report quantum computing revenue, so this cannot be answered from the available evidence.",
+        "findings": [
+          {"statement": "The filing reports revenue by product category; Networking revenue decreased by 3%.", "evidence_ids": ["EX-S1"], "claim_type": "fact", "confidence": 0.8}
+        ],
+        "recommended_items": [],
+        "missing_information": ["Any disclosure of quantum computing revenue (may not be separately reported)"],
+        "follow_up_questions": ["Would revenue by reported product category be useful instead?"],
+        "insufficient_evidence": true,
+        "confidence": 0.25
+      }
+    }
+  ]
+}

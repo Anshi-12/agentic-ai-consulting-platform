@@ -2,33 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Demo: full engagement (mock)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/scripts/run_demo.py",
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}"
-    },
-    {
-      "name": "Demo: interactive (you approve)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/scripts/run_demo.py",
-      "args": ["--interactive", "--vague"],
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}"
-    },
-    {
-      "name": "Demo: QA rework loop",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/scripts/run_demo.py",
-      "args": ["--scenario", "qa_failure_once"],
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}"
-    },
-    {
-      "name": "API server (uvicorn, /docs)",
+      "name": "1. Web app (consult + checkout pages)",
       "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
@@ -37,10 +11,44 @@
       "cwd": "${workspaceFolder}"
     },
     {
-      "name": "Evaluation suite",
+      "name": "2. Ask a question (terminal)",
       "type": "debugpy",
       "request": "launch",
-      "module": "backend.evaluation.run_eval",
+      "program": "${workspaceFolder}/scripts/ask.py",
+      "args": ["${input:question}"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "3. Build knowledge base (ingest)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "backend.rag.ingest",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "4. Hackathon evaluation",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "backend.evaluation.hackathon_eval",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "5. Market basket evaluation",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "backend.recommender.evaluate",
+      "args": ["--tune"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Group 1 engine demo (engagement workflow)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/run_demo.py",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
     },
@@ -51,6 +59,14 @@
       "module": "pytest",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "question",
+      "type": "promptString",
+      "description": "Question for the consulting coworker",
+      "default": "Our Cisco enterprise router is experiencing intermittent connectivity failures. Which replacement parts should we order, and what actions should we take to prevent future outages?"
     }
   ]
 }

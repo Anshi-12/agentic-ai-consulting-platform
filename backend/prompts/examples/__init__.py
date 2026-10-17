@@ -15,6 +15,9 @@ FAMILIES = {
     "financial": "financial.json",
     "qa_review": "qa_review.json",
     "executive_summary": "executive_summary.json",
+    "manager_routing": "manager_routing.json",
+    "domain_answer": "domain_answer.json",
+    "consolidation": "consolidation.json",
 }
 
 

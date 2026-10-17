@@ -1,0 +1,30 @@
+{"id": "r01", "question": "Our Cisco enterprise router is experiencing intermittent connectivity failures. Which replacement parts should we order, and what actions should we take to prevent future outages?", "domains": ["technology"], "source": "hackathon brief"}
+{"id": "r02", "question": "Which diagnostic instrument or replacement component best meets our laboratory requirements?", "domains": ["clinical"], "source": "hackathon brief"}
+{"id": "r03", "question": "What are the financial, competitive, and operational risks associated with Cisco and Agilent?", "domains": ["sec"], "source": "hackathon brief"}
+{"id": "r04", "question": "Which technology investments could improve food security and sustainability outcomes?", "domains": ["corporate_responsibility"], "source": "hackathon brief"}
+{"id": "r05", "question": "List major food insecurity reasons in 2024", "domains": ["corporate_responsibility"], "source": "professor prompts"}
+{"id": "r06", "question": "Explain malnutrition in war zones", "domains": ["corporate_responsibility"], "source": "professor prompts"}
+{"id": "r07", "question": "Explain increase prices impact on food security", "domains": ["corporate_responsibility"], "source": "professor prompts"}
+{"id": "r08", "question": "We need a virtual router we can deploy in AWS with SD-WAN support. What do you recommend?", "domains": ["technology"]}
+{"id": "r09", "question": "Our ASR 1000 aggregation routers keep failing over between route processors. What should we check?", "domains": ["technology"]}
+{"id": "r10", "question": "How does Google Cloud support the Model Context Protocol for building agents?", "domains": ["technology"]}
+{"id": "r11", "question": "Our pathology lab wants to digitize glass slides. Which Agilent scanner fits?", "domains": ["clinical"]}
+{"id": "r12", "question": "We study mitochondrial respiration in live cells. Which Agilent instrument should we buy?", "domains": ["clinical"]}
+{"id": "r13", "question": "How many recruiting phase 3 diabetes trials are there and who sponsors them?", "domains": ["clinical"]}
+{"id": "r14", "question": "What machine learning methods have been used to predict heart attacks from wearable devices?", "domains": ["clinical"]}
+{"id": "r15", "question": "Summarize research on powered knee exoskeletons for rehabilitation.", "domains": ["clinical"]}
+{"id": "r16", "question": "What revenue did Cisco report for its networking product category in fiscal 2025?", "domains": ["sec"]}
+{"id": "r17", "question": "What regulatory and antitrust risks does Alphabet disclose in its annual report?", "domains": ["sec"]}
+{"id": "r18", "question": "How are tariffs affecting Agilent's business according to its 10-K?", "domains": ["sec"]}
+{"id": "r19", "question": "Describe Agilent's reporting segments and their recent performance.", "domains": ["sec"]}
+{"id": "r20", "question": "How does urbanization change diets and food security across the rural-urban continuum?", "domains": ["corporate_responsibility"]}
+{"id": "r21", "question": "How much financing is needed to end hunger and malnutrition, and where should it come from?", "domains": ["corporate_responsibility"]}
+{"id": "r22", "question": "What is the cost of a healthy diet and how many people cannot afford it?", "domains": ["corporate_responsibility"]}
+{"id": "r23", "question": "We plan to standardize on Cisco edge routers for five years. Is the vendor financially stable and which platform fits our branches?", "domains": ["technology", "sec"]}
+{"id": "r24", "question": "Should we commit to Agilent for a digital pathology rollout? Assess the scanner fit and Agilent's financial risks.", "domains": ["clinical", "sec"]}
+{"id": "r25", "question": "Our CSR program wants to fund food security. Which Cisco technology investments and what do the SOFI reports say about financing?", "domains": ["technology", "corporate_responsibility"]}
+{"id": "r26", "question": "Compare Alphabet's and Cisco's competitive risks and suggest sustainability commitments related to hunger.", "domains": ["sec", "corporate_responsibility"]}
+{"id": "r27", "question": "Which one should we buy?", "domains": [], "expect_clarification": true}
+{"id": "r28", "question": "Help me decide", "domains": [], "expect_clarification": true}
+{"id": "r29", "question": "What clinical trials exist for long COVID and what do research papers say about anxiety after COVID?", "domains": ["clinical"]}
+{"id": "r30", "question": "What supply chain risks does Cisco disclose, and how could network outages at our branches be prevented?", "domains": ["sec", "technology"]}

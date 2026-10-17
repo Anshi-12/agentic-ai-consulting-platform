@@ -311,3 +311,7 @@ DEFAULT_RESPONDERS = {
     "consulting_qa": consulting_qa,
     "report_synthesis": report_synthesis,
 }
+
+from backend.ai.mock_consulting import CONSULTING_RESPONDERS  # noqa: E402
+
+DEFAULT_RESPONDERS.update(CONSULTING_RESPONDERS)

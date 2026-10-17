@@ -54,7 +54,7 @@ class WorkflowExecutor:
     def __init__(self, settings: Settings | None = None, *, data_module: DataModuleClient | None = None,
                  store: WorkflowStore | None = None, bus: EventBus | None = None,
                  factory: ProviderFactory | None = None, router: ModelRouter | None = None,
-                 checkpointer=None, review_queue: ReviewQueue | None = None):
+                 checkpointer=None, review_queue: ReviewQueue | None = None, knowledge_base=None):
         self.settings = settings or get_settings()
         configure_logging(self.settings.log_level)
         self.data = data_module or InMemoryDataModule()
@@ -67,12 +67,15 @@ class WorkflowExecutor:
                                   max_calls_per_agent=self.settings.max_tool_calls_per_agent,
                                   max_calls_per_run=self.settings.max_tool_calls_per_run,
                                   injection_policy=self.settings.injection_policy,
-                                  on_call=self._on_tool_call)
+                                  on_call=self._on_tool_call, knowledge_base=knowledge_base)
         runtime = AgentRuntime(self.settings, self.router, self.tools, self.data)
         self.services = GraphServices(self.settings, runtime, self.store, self.bus)
-        self.graph = build_graph(self.services).compile(checkpointer=checkpointer or get_checkpointer(self.settings))
+        self.graph = self._build_graph().compile(checkpointer=checkpointer or get_checkpointer(self.settings))
         self._threads: dict[str, threading.Thread] = {}
         self._locks: dict[str, threading.Lock] = {}
+
+    def _build_graph(self):
+        return build_graph(self.services)
 
     # -- events ---------------------------------------------------------------
     def _emit(self, run: WorkflowRun, type_: str, status: str | None = None, message: str | None = None,
@@ -132,9 +135,10 @@ class WorkflowExecutor:
                 interrupts.extend(task.interrupts)
         if interrupts:
             payload = interrupts[0].value
+            stage = payload.get("stage") or ("clarification" if payload.get("type") == "clarification"
+                                             else "human_approval")
             run = self.store.update(eid, status=WorkflowStatus.AWAITING_INPUT, pending_interrupt=payload,
-                                    current_stage="clarification" if payload.get("type") == "clarification"
-                                    else "human_approval")
+                                    current_stage=stage)
             self._emit(run, EventType.WORKFLOW_AWAITING_INPUT, "awaiting_input",
                        f"waiting for {payload.get('type')}", interrupt_type=payload.get("type"),
                        escalated=payload.get("escalated", False))

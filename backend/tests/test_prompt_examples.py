@@ -5,10 +5,12 @@ import re
 
 import pytest
 
+from backend.ai import consulting_schemas as cs
 from backend.ai import structured_outputs as so
 from backend.prompts.discovery_prompts import DISCOVERY_PROMPT, STRUCTURING_PROMPT
 from backend.prompts.examples import FAMILIES, load_family
 from backend.prompts.financial_prompts import FINANCIAL_PROMPT
+from backend.prompts.manager_prompts import CONSOLIDATE_PROMPT, MANAGER_PLAN_PROMPT, domain_prompt
 from backend.prompts.qa_prompts import QA_PROMPT
 from backend.prompts.strategy_prompts import STRATEGY_PROMPT
 from backend.prompts.synthesis_prompts import SYNTHESIS_PROMPT
@@ -20,13 +22,20 @@ FAMILY_PROMPTS = {
     "financial": FINANCIAL_PROMPT,
     "qa_review": QA_PROMPT,
     "executive_summary": SYNTHESIS_PROMPT,
+    "manager_routing": MANAGER_PLAN_PROMPT,
+    "domain_answer": domain_prompt("technology"),
+    "consolidation": CONSOLIDATE_PROMPT,
 }
+
+
+def schema_of(fam):
+    return getattr(so, fam["schema"], None) or getattr(cs, fam["schema"])
 
 
 @pytest.mark.parametrize("family", list(FAMILIES))
 def test_family_has_three_valid_diverse_examples(family):
     fam = load_family(family)
-    schema = getattr(so, fam["schema"])
+    schema = schema_of(fam)
     examples = fam["examples"]
     assert len(examples) >= 3
     for ex in examples:
@@ -43,6 +52,9 @@ def test_every_family_includes_an_abstention_or_insufficient_evidence_case():
         "financial": lambda o: o["data_available"] is False,
         "qa_review": lambda o: o["verdict"] == "escalate",
         "executive_summary": lambda o: any("No financial inputs" in x for x in o["limitations"]),
+        "manager_routing": lambda o: o["needs_clarification"] is True,
+        "domain_answer": lambda o: o["insufficient_evidence"] is True,
+        "consolidation": lambda o: o["overall_confidence"] < 0.3,
     }
     for family, check in checks.items():
         assert any(check(ex["output"]) for ex in load_family(family)["examples"]), family

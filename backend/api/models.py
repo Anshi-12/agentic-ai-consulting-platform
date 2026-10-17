@@ -105,3 +105,48 @@ class RecommendationsResponse(BaseModel):
     approved: bool
     qa_verdict: str | None
     recommendations: list[LinkedRecommendation]
+
+
+# ---------------------------------------------------------------------------
+# Hackathon multi-agent consulting (manager + domain agents)
+# ---------------------------------------------------------------------------
+class ConsultRequest(BaseModel):
+    question: str = Field(min_length=3, max_length=4000)
+    project_id: str = Field(default="hackathon", pattern=r"^[A-Za-z0-9_\-]{1,64}$")
+    mock_scenario: Literal["need_human", "fabricate"] | None = Field(
+        default=None, description="Mock mode only: exercise the human-participant loop or citation verification")
+
+
+class HumanAnswerResume(BaseModel):
+    type: Literal["clarification", "information"]
+    answer: str = Field(min_length=1, max_length=2000)
+
+
+class ConsultApprovalResume(BaseModel):
+    type: Literal["approval"] = "approval"
+    decision: Literal["approve", "reject"]
+    reviewer: str | None = None
+    comments: str = Field(default="", max_length=4000)
+
+
+class ConsultResumeRequest(BaseModel):
+    payload: HumanAnswerResume | ConsultApprovalResume = Field(discriminator="type")
+
+
+class ConsultResultResponse(BaseModel):
+    execution_id: str
+    status: WorkflowStatus
+    current_stage: str | None
+    pending_interrupt: dict[str, Any] | None = None
+    question: str
+    routing: dict[str, Any] | None = None
+    ledger: dict[str, Any] | None = None
+    progress_history: list[dict[str, Any]] = Field(default_factory=list)
+    agent_results: dict[str, Any] = Field(default_factory=dict)
+    result: dict[str, Any] | None = None
+    result_markdown: str | None = None
+    stage_history: list[StageRecord] = Field(default_factory=list)
+    security_flags: list[dict[str, Any]] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+    usage: UsageSummary = Field(default_factory=UsageSummary)
+    error: dict[str, Any] | None = None
