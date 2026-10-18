@@ -1,0 +1,154 @@
+[
+  {
+    "domain": "clinical",
+    "directory_file": "Agilent.txt",
+    "title_hint": "Seahorse Real-Time Cell Metabolic Analysis",
+    "url": "https://www.agilent.com/en/product/cell-analysis/real-time-cell-metabolic-analysis",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "clinical",
+    "directory_file": "Agilent.txt",
+    "title_hint": "Seahorse Real-Time Cell Metabolic Analysis",
+    "url": "https://www.agilent.com/about/newsroom/presrel/2023/07mar-ca23010.html",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "clinical",
+    "directory_file": "Agilent.txt",
+    "title_hint": "Digital Pathology",
+    "url": "https://www.agilent.com/en/product/digital-pathology",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "clinical",
+    "directory_file": "Agilent.txt",
+    "title_hint": "Fast, high-quality whole-slide imaging for pathology labs",
+    "url": "https://www.agilent.com/en/product/digital-pathology/digital-pathology-scanners",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "clinical",
+    "directory_file": "Agilent.txt",
+    "title_hint": "NanoZoomer® Slide Scanner System IVD",
+    "url": "https://www.agilent.com/en/product/digital-pathology/digital-pathology-scanners/nanozoomer-slide-scanner-system-4370282",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "clinical",
+    "directory_file": "Agilent.txt",
+    "title_hint": "Artisan Link Pro. The consistent, safe and easy choice for special stains",
+    "url": "https://www.agilent.com/en/product/special-stains",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "DataSource-Cisco.txt",
+    "title_hint": "Cisco Catalyst 8300 Series Edge Platforms",
+    "url": "https://www.cisco.com/c/en/us/products/routers/catalyst-8300-series-edge-platforms/index.html",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "DataSource-Cisco.txt",
+    "title_hint": "Cisco Catalyst 8200 Series Edge Platforms",
+    "url": "https://www.cisco.com/c/en/us/products/routers/catalyst-8200-series-edge-platforms/index.html",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "DataSource-Cisco.txt",
+    "title_hint": "Cisco Catalyst 8000V Edge Software",
+    "url": "https://www.cisco.com/c/en/us/products/routers/catalyst-8000v-edge-software/index.html",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "DataSource-Cisco.txt",
+    "title_hint": "Cisco 4000 Series Integrated Services Routers (ISR)",
+    "url": "https://www.cisco.com/c/en/us/products/routers/4000-series-integrated-services-routers-isr/index.html",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "DataSource-Cisco.txt",
+    "title_hint": "Cisco ASR 1000 Series Aggregation Services Routers",
+    "url": "https://www.cisco.com/c/en/us/products/routers/asr-1000-series-aggregation-services-routers/index.html",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "DataSource-Cisco.txt",
+    "title_hint": "Cisco Catalyst 8300 Series Edge Platforms",
+    "url": "https://www.cisco.com/c/en/us/products/collateral/routers/catalyst-8300-series-edge-platforms/datasheet-c78-744088.pdf",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "DataSource-Cisco.txt",
+    "title_hint": "Cisco Catalyst 8200 Series Edge Platforms",
+    "url": "https://www.cisco.com/c/en/us/products/collateral/routers/catalyst-8200-series-edge-platforms/nb-06-cat8200-series-edge-plat-ds-cte-en.pdf",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "DataSource-Cisco.txt",
+    "title_hint": "Cisco Catalyst 8000V Edge Software",
+    "url": "https://www.cisco.com/c/en/us/products/collateral/routers/catalyst-8000v-edge-software/catalyst-8000v-edge-software-ds.pdf",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "DataSource-Cisco.txt",
+    "title_hint": "Cisco 4000 Series Integrated Services Routers (ISR)",
+    "url": "https://www.cisco.com/c/en/us/products/collateral/routers/4000-series-integrated-services-routers-isr/data_sheet-c78-732542.pdf",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "DataSource-Cisco.txt",
+    "title_hint": "Cisco ASR 1000 Series Aggregation Services Routers",
+    "url": "https://www.cisco.com/c/en/us/products/collateral/routers/asr-1000-series-aggregation-services-routers/datasheet-c78-731632.pdf",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "Google GCP.txt",
+    "title_hint": "Google GCP",
+    "url": "https://docs.cloud.google.com/mcp/overview",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "Google GCP.txt",
+    "title_hint": "MCP",
+    "url": "https://cloud.google.com/discover/what-is-model-context-protocol?_gl=1*pmxwj5*_ga*MTkwNDE4NTYwNS4xNzc4MDEzOTM5*_ga_WH2QY8WWF5*czE3OTIyNTg0MzkkbzckZzEkdDE3OTIyNTg0NjUkajM0JGwwJGgw",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  },
+  {
+    "domain": "technology",
+    "directory_file": "Google GCP.txt",
+    "title_hint": "RAG",
+    "url": "https://cloud.google.com/use-cases/retrieval-augmented-generation",
+    "status": "LINK_ONLY_NOT_DOWNLOADED",
+    "note": "URL listing is not the content of the underlying document."
+  }
+]
