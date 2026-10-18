@@ -7,13 +7,19 @@ models are referenced as ``"<provider>:<model-id>"`` strings.
 from __future__ import annotations
 
 import os
+import re
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
 
 
 def _load_dotenv() -> None:
-    """Minimal .env loader (no extra dependency). Existing env vars win."""
+    """Minimal .env loader (no extra dependency). Existing env vars win.
+
+    Set CONSULTING_AI_SKIP_DOTENV=1 to ignore .env (the test suite does this so a developer's
+    live keys and models never leak into tests)."""
+    if os.getenv("CONSULTING_AI_SKIP_DOTENV", "").strip().lower() in {"1", "true", "yes", "on"}:
+        return
     for candidate in (Path.cwd() / ".env", Path(__file__).resolve().parent.parent / ".env"):
         if not candidate.is_file():
             continue
@@ -22,7 +28,13 @@ def _load_dotenv() -> None:
             if not line or line.startswith("#") or "=" not in line:
                 continue
             key, _, value = line.partition("=")
-            key, value = key.strip(), value.strip().strip('"').strip("'")
+            key, value = key.strip(), value.strip()
+            if value[:1] in {'"', "'"} and value.count(value[0]) >= 2:
+                value = value[1:value.index(value[0], 1)]  # quoted: keep everything inside the quotes
+            else:
+                value = re.split(r"(?:^|\s+)#", value, maxsplit=1)[0].strip()  # drop trailing "  # comment"
+            if key.startswith("export "):
+                key = key[len("export "):].strip()
             os.environ.setdefault(key, value)
         break
 
@@ -71,6 +83,7 @@ class Settings:
     max_output_tokens: int = 4096
     temperature: float = 0.2
     structured_repair_attempts: int = 1
+    min_request_interval_s: float = 0.0  # pace requests for free-tier RPM limits (e.g. 4.5 for 15 RPM)
 
     # --- agent / workflow limits -------------------------------------------
     agent_timeout_s: float = 180.0
@@ -162,6 +175,7 @@ def load_settings() -> Settings:
         max_output_tokens=_int("LLM_MAX_OUTPUT_TOKENS", 4096),
         temperature=_float("LLM_TEMPERATURE", 0.2),
         structured_repair_attempts=_int("LLM_STRUCTURED_REPAIR_ATTEMPTS", 1),
+        min_request_interval_s=_float("LLM_MIN_INTERVAL_SECONDS", 0.0),
         agent_timeout_s=_float("AGENT_TIMEOUT_SECONDS", 180.0),
         agent_timeouts=timeouts,
         node_max_attempts=_int("NODE_MAX_ATTEMPTS", 2),

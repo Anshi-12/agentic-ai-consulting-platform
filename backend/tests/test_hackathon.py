@@ -352,3 +352,27 @@ def test_hackathon_api(consult, basket_csv, monkeypatch):
         assert c.get("/api/v1/recommender/rules").json()["rules"]
         assert c.post("/api/v1/recommender/retrain", json={"csv_path": "/etc/passwd"}).status_code == 422
         assert c.post("/api/v1/recommender/retrain", json={}).json()["version"] == 2
+
+
+def test_partial_answer_not_marked_insufficient(consult, principal):
+    """A model that cites facts but flags 'insufficient' (other parts belong to other agents) is a partial answer."""
+    from backend.ai import mock_consulting
+
+    original = mock_consulting.domain_answer
+
+    def flags_insufficient(req):
+        out = original(req)
+        facts = [f for f in out["findings"] if f["claim_type"] == "fact" and f["evidence_ids"]]
+        if len(facts) == 1:  # small fixture KB: add a second cited fact from the same passage
+            out["findings"].append({**facts[0], "statement": facts[0]["statement"] + " (restated)"})
+        out["insufficient_evidence"] = True
+        return out
+    ex = consult()
+    ex.router.factory.mock_responders = {**ex.router.factory.mock_responders, "domain_answer": flags_insufficient}
+    run = ex.ask(ConsultRequest(question="Explain the major drivers of food insecurity in 2023 and conflict"), principal)
+    r = ex.result(run.execution_id, principal)
+    agent = next(iter(r.agent_results.values()))
+    assert len([f for f in agent["answer"]["findings"] if f["claim_type"] == "fact" and f["evidence_ids"]]) >= 2
+    assert agent["uncertainty"]["partial_answer"] is True
+    assert agent["answer"]["insufficient_evidence"] is False
+    assert r.ledger["tasks"][0]["status"] == "completed" and agent["uncertainty"]["final_confidence"] <= 0.6

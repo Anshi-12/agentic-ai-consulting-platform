@@ -8,6 +8,8 @@ adapters easy to test with httpx.MockTransport.
 from __future__ import annotations
 
 import json
+import re
+import os
 import threading
 import time
 from abc import ABC, abstractmethod
@@ -46,17 +48,21 @@ class ChatResponse:
 class ProviderError(Exception):
     """Normalized provider failure.
 
-    kind: timeout | rate_limit | server | auth | invalid_request | connection | unknown
+    kind: timeout | rate_limit | quota_exhausted | server | auth | invalid_request | connection | unknown
+    quota_exhausted = a daily/billing quota is used up: retrying minutes later will not help.
+    retry_after = seconds the provider asked us to wait (Retry-After header / Gemini RetryInfo).
     """
 
     RETRYABLE_KINDS = {"timeout", "rate_limit", "server", "connection"}
 
-    def __init__(self, kind: str, message: str, provider: str = "", model: str = "", status: int | None = None):
+    def __init__(self, kind: str, message: str, provider: str = "", model: str = "", status: int | None = None,
+                 retry_after: float | None = None):
         super().__init__(f"[{provider}:{model}] {kind}: {message}")
         self.kind = kind
         self.provider = provider
         self.model = model
         self.status = status
+        self.retry_after = retry_after
 
     @property
     def retryable(self) -> bool:
@@ -67,6 +73,21 @@ class ProviderError(Exception):
                 "retryable": self.retryable, "message": str(self)[:300]}
 
 
+# Daily / billing quotas (Gemini "...PerDay..." quota IDs, OpenAI insufficient_quota, Anthropic credit balance).
+_QUOTA_EXHAUSTED = re.compile(r"PerDay|insufficient_quota|credit_balance|billing_hard_limit", re.I)
+
+
+def _retry_after(response: httpx.Response, raw: str) -> float | None:
+    header = response.headers.get("retry-after")
+    if header:
+        try:
+            return float(header)
+        except ValueError:
+            pass
+    m = re.search(r'"retryDelay"\s*:\s*"([\d.]+)s"', raw)  # Gemini RetryInfo
+    return float(m.group(1)) if m else None
+
+
 def normalize_http_error(provider: str, model: str, exc: Exception | None = None,
                          response: httpx.Response | None = None) -> ProviderError:
     if isinstance(exc, httpx.TimeoutException):
@@ -75,13 +96,15 @@ def normalize_http_error(provider: str, model: str, exc: Exception | None = None
         return ProviderError("connection", str(exc)[:200], provider, model)
     if response is not None:
         status = response.status_code
+        raw = response.text or ""
         try:
-            detail = response.json()
-            detail = json.dumps(detail.get("error", detail))[:300]
+            body = response.json()
+            detail = json.dumps(body.get("error", body) if isinstance(body, dict) else body)[:300]
         except Exception:
-            detail = response.text[:300]
+            detail = raw[:300]
+        retry_after = _retry_after(response, raw)
         if status == 429:
-            kind = "rate_limit"
+            kind = "quota_exhausted" if _QUOTA_EXHAUSTED.search(raw) else "rate_limit"
         elif status in (401, 403):
             kind = "auth"
         elif status in (400, 404, 413, 422):
@@ -90,7 +113,7 @@ def normalize_http_error(provider: str, model: str, exc: Exception | None = None
             kind = "server"
         else:
             kind = "unknown"
-        return ProviderError(kind, detail, provider, model, status)
+        return ProviderError(kind, detail, provider, model, status, retry_after)
     return ProviderError("unknown", str(exc)[:200] if exc else "unknown error", provider, model)
 
 
@@ -156,8 +179,10 @@ class OpenAIProvider(BaseProvider):
         super().__init__(model, settings)
         if not settings.openai_api_key:
             raise ProviderError("auth", "OPENAI_API_KEY is not set", self.name, model)
+        self._json_mode_ok = os.getenv("OPENAI_JSON_MODE", "true").lower() not in {"0", "false", "no", "off"}
+        base = settings.openai_base_url.rstrip("/") + "/"  # so relative paths keep the /v1 or /openai/ prefix
         self._client = httpx.Client(
-            base_url=settings.openai_base_url,
+            base_url=base,
             timeout=settings.request_timeout_s,
             transport=transport,
             headers={"authorization": f"Bearer {settings.openai_api_key}", "content-type": "application/json"},
@@ -170,11 +195,20 @@ class OpenAIProvider(BaseProvider):
             "temperature": request.temperature,
             "max_tokens": request.max_tokens,
         }
-        if request.json_mode:
+        use_json_mode = request.json_mode and self._json_mode_ok
+        if use_json_mode:
             body["response_format"] = {"type": "json_object"}
         start = time.perf_counter()
         try:
-            resp = self._client.post("/chat/completions", json=body)
+            resp = self._client.post("chat/completions", json=body)
+            if resp.status_code == 400 and use_json_mode:
+                # Some OpenAI-compatible servers (Gemini, Groq models, Ollama builds) reject JSON mode.
+                # Retry once without it; prompts already demand JSON and the router validates output.
+                body.pop("response_format", None)
+                retry = self._client.post("chat/completions", json=body)
+                if retry.status_code < 400:
+                    self._json_mode_ok = False
+                resp = retry
         except httpx.HTTPError as exc:
             raise normalize_http_error(self.name, self.model, exc=exc) from exc
         if resp.status_code >= 400:

@@ -173,6 +173,14 @@ class DomainAgent(BaseAgent):
             it.evidence_ids = [i for i in it.evidence_ids if i in known and i not in flagged]
         cited = {i for f in answer.findings for i in f.evidence_ids} | {
             i for it in answer.recommended_items for i in it.evidence_ids}
+        partial = False
+        cited_facts = [f for f in answer.findings if f.claim_type == "fact" and f.evidence_ids]
+        if answer.insufficient_evidence and len(cited_facts) >= 2:
+            # The model answered its domain's part with cited facts but flagged the overall question as
+            # insufficient (usually because other parts belong to other agents). Treat it as a partial answer.
+            answer.insufficient_evidence = False
+            partial = True
+            result.warnings.append("agent flagged insufficient despite >=2 cited facts; treated as partial answer")
 
         top = sorted(evidence.values(), key=lambda e: e["_rank"])[:3]
         strength = 0.0
@@ -184,6 +192,8 @@ class DomainAgent(BaseAgent):
         final = min(model_conf, 0.3 + 0.7 * strength) if evidence else min(model_conf, 0.2)
         if answer.insufficient_evidence:
             final = min(final, 0.3)
+        if partial:
+            final = min(final, 0.6)
         if supports and groundedness < 0.3:
             final = min(final, 0.45)
         final = round(final, 3)
@@ -195,6 +205,7 @@ class DomainAgent(BaseAgent):
                             "groundedness": groundedness, "final_confidence": final, "level": level,
                             "evidence_retrieved": len(evidence), "evidence_cited": len(cited),
                             "fabricated_citations_removed": fabricated,
+                            "partial_answer": partial,
                             "insufficient_evidence": answer.insufficient_evidence},
         }
 

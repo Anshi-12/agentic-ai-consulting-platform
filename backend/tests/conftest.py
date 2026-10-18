@@ -8,8 +8,12 @@ from typing import Any, Callable
 
 import pytest
 
-# Force offline mode before anything reads settings.
+# Force offline mode before anything reads settings, and keep the developer's .env out of tests.
+os.environ["CONSULTING_AI_SKIP_DOTENV"] = "1"
 os.environ["LLM_PROVIDER_MODE"] = "mock"
+for _var in ("MODEL_PRIMARY", "MODEL_LIGHT", "MODEL_SYNTHESIS", "MODEL_FALLBACK", "OPENAI_BASE_URL",
+             "LLM_MIN_INTERVAL_SECONDS", "EMBEDDINGS_BACKEND", "CONSULT_REQUIRE_APPROVAL", "CONSULT_MAX_ROUNDS"):
+    os.environ.pop(_var, None)
 os.environ.pop("LANGSMITH_TRACING", None)
 os.environ.pop("LANGCHAIN_TRACING_V2", None)
 

@@ -17,6 +17,9 @@ MANAGER_PLAN_PROMPT = PromptTemplate(
     example_family="manager_routing",
     reasoning_constraints=[
         "Route to every agent whose knowledge is needed; questions spanning domains get one task per agent.",
+        "Each task's instruction must contain ONLY the part of the question that agent's knowledge can answer "
+        "(e.g. the SEC task asks about filings/risks, not about food security). Never paste the full multi-part "
+        "question into every task; the manager combines the parts later.",
         "Agilent appears in two domains: instruments/labs -> clinical; financials/risks/filings -> sec.",
         "Cisco hardware/networking -> technology; Cisco financials/risks -> sec.",
         "Write 1-4 short, keyword-rich search_queries per task; set company/year when the question names them.",
@@ -87,7 +90,11 @@ def domain_prompt(agent: str) -> PromptTemplate:
             "Every finding labelled 'fact' must cite at least one evidence ID that supports it.",
             "Calculated values (trial counts, match scores) may be quoted as 'calculated'; never compute new numbers.",
             "Recommended items must come from product matches or evidence; include match_score when provided.",
-            "If the evidence does not answer the instruction, set insufficient_evidence=true and list what is missing.",
+            "Answer only the part of the request that falls within your domain; other specialist agents handle the "
+            "rest, and the manager combines the answers. Do not penalise yourself for parts outside your domain.",
+            "Set insufficient_evidence=true only when the evidence cannot answer YOUR domain's part of the instruction. "
+            "If you answered it with cited findings, insufficient_evidence must be false even if other parts of the "
+            "customer's question are outside your knowledge; mention those parts in missing_information instead.",
         ],
         validation_criteria=["Only evidence IDs present in <retrieved_evidence> are cited."],
     )

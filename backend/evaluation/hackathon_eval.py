@@ -3,6 +3,11 @@ relevance and response quality, measured on the professor's data.
 
     python -m backend.evaluation.hackathon_eval            # uses data/index and the Retail CSV
     python -m backend.evaluation.hackathon_eval --skip-consult
+    python -m backend.evaluation.hackathon_eval --routing-limit 10 --consult-limit 3   # free-tier friendly
+
+Live mode paces requests (LLM_MIN_INTERVAL_SECONDS, default 4.5s here) to stay under free-tier
+per-minute limits. If the provider's quota runs out mid-run, the LLM sections stop and the report
+is still written with every offline metric plus whatever LLM cases finished.
 
 Writes backend/evaluation/results/hackathon_report.json and hackathon_report.md
 (the markdown is ready to paste into the presentation).
@@ -10,6 +15,7 @@ Writes backend/evaluation/results/hackathon_report.json and hackathon_report.md
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import re
 import time
@@ -19,6 +25,7 @@ from typing import Any
 from backend.agents.intent_rules import expand_query, route_by_rules
 from backend.agents.base import AgentContext
 from backend.agents.manager_agent import ManagerAgent
+from backend.ai.model_router import ModelCallFailed
 from backend.api.models import ConsultRequest
 from backend.config import get_settings
 from backend.contracts.auth import dev_principal
@@ -45,8 +52,15 @@ def routing_metrics(cases: list[dict[str, Any]], predict) -> dict[str, Any]:
     fp = dict(tp)
     fn = dict(tp)
     rows = []
+    stopped = None
+    done = []
     for c in cases:
-        pred, clar = predict(c["question"])
+        try:
+            pred, clar = predict(c["question"])
+        except ModelCallFailed as e:
+            stopped = _stop_reason(e)
+            break
+        done.append(c)
         gold = set(c["domains"])
         if c.get("expect_clarification"):
             clar_n += 1
@@ -68,10 +82,23 @@ def routing_metrics(cases: list[dict[str, Any]], predict) -> dict[str, Any]:
         p = tp[d] / (tp[d] + fp[d]) if tp[d] + fp[d] else 0.0
         r = tp[d] / (tp[d] + fn[d]) if tp[d] + fn[d] else 0.0
         per[d] = {"precision": round(p, 3), "recall": round(r, 3), "f1": round(2 * p * r / (p + r), 3) if p + r else 0.0}
-    return {"cases": len(cases), "exact_match_accuracy": round(exact / len(cases), 3),
+    cases = done
+    if not cases:
+        return {"cases": 0, "stopped": stopped, "exact_match_accuracy": None, "cross_domain_accuracy": None,
+                "clarification_accuracy": None, "per_domain": per, "errors": []}
+    return {"cases": len(cases), "stopped": stopped, "exact_match_accuracy": round(exact / len(cases), 3),
             "cross_domain_accuracy": round(cross_ok / cross_n, 3) if cross_n else None,
             "clarification_accuracy": round(clar_ok / clar_n, 3) if clar_n else None,
             "per_domain": per, "errors": [r for r in rows if not r["correct"]]}
+
+
+def _stop_reason(e: ModelCallFailed) -> str:
+    kind = getattr(e.last_error, "kind", "error")
+    if kind == "quota_exhausted":
+        return "provider daily quota exhausted"
+    if kind == "rate_limit":
+        return "provider rate limit (try again later or lower --routing-limit/--consult-limit)"
+    return f"model call failed ({kind})"
 
 
 def rule_predict(q: str) -> tuple[list[str], bool]:
@@ -141,8 +168,10 @@ def product_metrics(kb: KnowledgeBase, cases: list[dict[str, Any]]) -> dict[str,
 def consult_quality(ex: ConsultingExecutor, cases: list[dict[str, Any]]) -> dict[str, Any]:
     p = dev_principal("evaluator")
     rows = []
+    stopped = None
     for c in cases:
         t0 = time.perf_counter()
+        print(f"  consult case {c['id']} ...", flush=True)
         run = ex.ask(ConsultRequest(question=c["question"]), p)
         guard = 0
         while run.status == WorkflowStatus.AWAITING_INPUT and guard < 3:
@@ -154,6 +183,10 @@ def consult_quality(ex: ConsultingExecutor, cases: list[dict[str, Any]]) -> dict
         r = ex.result(run.execution_id, p)
         wall = time.perf_counter() - t0
         if not r.result:
+            err = json.dumps(r.error or {}, default=str)
+            if re.search(r"quota_exhausted|rate_limit", err):
+                stopped = "provider quota/rate limit reached; remaining cases skipped"
+                break
             rows.append({"id": c["id"], "status": r.status.value, "success": False})
             continue
         a, q = r.result["answer"], r.result["quality"]
@@ -177,7 +210,7 @@ def consult_quality(ex: ConsultingExecutor, cases: list[dict[str, Any]]) -> dict
     def avg(key):
         vals = [x[key] for x in ok if x.get(key) is not None]
         return round(sum(vals) / len(vals), 3) if vals else None
-    return {"cases": len(rows), "workflow_success_rate": round(len(ok) / len(rows), 3) if rows else 0.0,
+    return {"cases": len(rows), "stopped": stopped, "workflow_success_rate": round(len(ok) / len(rows), 3) if rows else 0.0,
             "routing_accuracy_end_to_end": avg("routing_correct"), "citation_validity": avg("citation_validity"),
             "actions_with_evidence": avg("actions_with_evidence"), "actions_measurable": avg("actions_measurable"),
             "finding_groundedness": avg("finding_groundedness"), "answer_term_coverage": avg("answer_term_coverage"),
@@ -186,14 +219,19 @@ def consult_quality(ex: ConsultingExecutor, cases: list[dict[str, Any]]) -> dict
 
 
 # ---------------------------------------------------------------------------
+def _pct(v) -> str:
+    return "n/a" if v is None else f"{v:.0%}"
+
+
 def to_markdown(rep: dict[str, Any]) -> str:
     L = [f"# Hackathon evaluation ({rep['provider_mode']} mode, retrieval: {rep['retrieval_mode']})", ""]
     r = rep["routing"]
     L += ["## Routing accuracy (manager agent)", "", "| Router | Exact match | Cross-domain | Clarification |",
           "|---|---|---|---|"]
     for name, m in r.items():
-        L.append(f"| {name} | {m['exact_match_accuracy']:.0%} | {m['cross_domain_accuracy']:.0%} | "
-                 f"{m['clarification_accuracy']:.0%} |")
+        note = f" ({m['cases']} cases; stopped: {m['stopped']})" if m.get("stopped") else ""
+        L.append(f"| {name}{note} | {_pct(m['exact_match_accuracy'])} | {_pct(m['cross_domain_accuracy'])} | "
+                 f"{_pct(m['clarification_accuracy'])} |")
     L += ["", f"{next(iter(r.values()))['cases']} labelled questions, including the brief's and professor's examples.", ""]
     L += ["## Retrieval accuracy", "", "| Setting | Hit@1 | Hit@3 | Hit@5 | MRR |", "|---|---|---|---|---|"]
     for name, m in rep["retrieval"].items():
@@ -212,14 +250,18 @@ def to_markdown(rep: dict[str, Any]) -> str:
               f"{sig['null_max_pair_count_mean']}× in shuffled baskets (p={sig['p_value_max_pair']}) → {sig['interpretation']}."]
     if rep.get("consult"):
         c = rep["consult"]
-        L += ["", "## Response quality (end-to-end consultations)", "",
-              f"- Workflow success: {c['workflow_success_rate']:.0%} of {c['cases']}",
-              f"- End-to-end routing accuracy: {c['routing_accuracy_end_to_end']:.0%}",
-              f"- Citation validity: {c['citation_validity']:.0%} · actions citing evidence: {c['actions_with_evidence']:.0%}"
-              f" · measurable actions: {c['actions_measurable']:.0%}",
-              f"- Finding groundedness (lexical support in cited passage): {c['finding_groundedness']:.0%}",
-              f"- Expected-term coverage in answers: {c['answer_term_coverage']:.0%}",
-              f"- Mean confidence {c['mean_confidence']:.0%} · mean latency {c['mean_wall_time_s']}s · mean tokens {c['mean_tokens']:.0f}"]
+        L += ["", "## Response quality (end-to-end consultations)", ""]
+        if c.get("stopped"):
+            L += [f"_Stopped early: {c['stopped']}._", ""]
+        if c["cases"]:
+            L += [f"- Workflow success: {_pct(c['workflow_success_rate'])} of {c['cases']}",
+                  f"- End-to-end routing accuracy: {_pct(c['routing_accuracy_end_to_end'])}",
+                  f"- Citation validity: {_pct(c['citation_validity'])} · actions citing evidence: "
+                  f"{_pct(c['actions_with_evidence'])} · measurable actions: {_pct(c['actions_measurable'])}",
+                  f"- Finding groundedness (lexical support in cited passage): {_pct(c['finding_groundedness'])}",
+                  f"- Expected-term coverage in answers: {_pct(c['answer_term_coverage'])}",
+                  f"- Mean confidence {_pct(c['mean_confidence'])} · mean latency {c['mean_wall_time_s']}s · "
+                  f"mean tokens {c['mean_tokens'] or 0:.0f}"]
         if rep["provider_mode"] == "mock":
             L += ["", "_Offline mode: agent answers are extracted verbatim from retrieved passages, so groundedness and "
                   "citation validity are trivially high. Run with LLM_PROVIDER_MODE=live to evaluate model-written "
@@ -231,9 +273,15 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--skip-consult", action="store_true")
     ap.add_argument("--skip-llm-routing", action="store_true")
+    ap.add_argument("--routing-limit", type=int, default=0, help="only send the first N routing questions to the LLM")
+    ap.add_argument("--consult-limit", type=int, default=0, help="only run the first N end-to-end consultations")
     ap.add_argument("--csv", default=str(DEFAULT_CSV))
     args = ap.parse_args()
     settings = get_settings()
+    if not settings.is_mock and settings.min_request_interval_s <= 0:
+        settings = dataclasses.replace(settings, min_request_interval_s=4.5)  # ~13 requests/minute
+    if not settings.is_mock:
+        print(f"live mode: pacing model requests {settings.min_request_interval_s}s apart", flush=True)
     ex = ConsultingExecutor(settings)
     if ex.kb is None:
         print("Knowledge base not built. Run: python -m backend.rag.ingest")
@@ -242,7 +290,9 @@ def main() -> int:
     routing = load("routing_cases.jsonl")
     rep["routing"] = {"rule-based": routing_metrics(routing, rule_predict)}
     if not settings.is_mock and not args.skip_llm_routing:
-        rep["routing"][f"LLM ({settings.model_primary})"] = routing_metrics(routing, llm_predict_factory(ex))
+        llm_cases = routing[:args.routing_limit] if args.routing_limit else routing
+        print(f"LLM routing: {len(llm_cases)} questions ...", flush=True)
+        rep["routing"][f"LLM ({settings.model_primary})"] = routing_metrics(llm_cases, llm_predict_factory(ex))
     rc = load("retrieval_cases.jsonl")
     rep["retrieval"] = {"full": retrieval_metrics(ex.kb, rc),
                         "no entity filters": retrieval_metrics(ex.kb, rc, use_filters=False),
@@ -254,7 +304,10 @@ def main() -> int:
         rep["market_basket"] = eval_basket(train, test, Params(), 5)
         rep["market_basket"]["data_signal_test"] = signal_test(tx)
     if not args.skip_consult:
-        rep["consult"] = consult_quality(ex, load("consult_quality_cases.jsonl"))
+        cq = load("consult_quality_cases.jsonl")
+        cq = cq[:args.consult_limit] if args.consult_limit else cq
+        print(f"End-to-end consultations: {len(cq)} ...", flush=True)
+        rep["consult"] = consult_quality(ex, cq)
     out = HERE / "results"
     out.mkdir(exist_ok=True)
     (out / "hackathon_report.json").write_text(json.dumps(rep, indent=2), encoding="utf-8")

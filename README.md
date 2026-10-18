@@ -37,7 +37,7 @@ Open **http://127.0.0.1:8000**:
 
 Terminal alternative: `python scripts/ask.py "your question"`. VS Code's Run and Debug panel has numbered launch configs for each step.
 
-Python 3.11+ (tested on 3.13). Tests: `pytest` (153 tests, no data or key needed).
+Python 3.10+ (tested on 3.10 and 3.13). Tests: `pytest` (153 tests, no data or key needed).
 
 ## Architecture
 

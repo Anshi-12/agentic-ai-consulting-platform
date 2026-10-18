@@ -13,6 +13,7 @@ backoff + jitter on retryable errors -> JSON extraction -> Pydantic validation
 from __future__ import annotations
 
 import random
+import threading
 import time
 import uuid
 from dataclasses import asdict, dataclass, field
@@ -102,6 +103,19 @@ class ModelRouter:
         self._sleep = sleep
         self._rng = rng or random.Random()
         self.listeners: list[Callable[[CallRecord], None]] = []
+        self._pace_lock = threading.Lock()
+        self._last_request = 0.0
+
+    def _pace(self) -> None:
+        """Keep at least LLM_MIN_INTERVAL_SECONDS between requests (free-tier requests-per-minute limits)."""
+        gap = self.settings.min_request_interval_s
+        if gap <= 0:
+            return
+        with self._pace_lock:
+            wait = self._last_request + gap - time.monotonic()
+            if wait > 0:
+                self._sleep(wait)
+            self._last_request = time.monotonic()
 
     # -- configuration -------------------------------------------------------
     def model_for_role(self, role: str) -> str:
@@ -126,6 +140,7 @@ class ModelRouter:
             start = time.perf_counter()
             try:
                 provider = self.factory.get(ref)
+                self._pace()
                 resp = provider.complete(request)
                 record.attempts.append(AttemptRecord(ref, attempt, "ok", (time.perf_counter() - start) * 1000))
                 return resp
@@ -136,7 +151,10 @@ class ModelRouter:
                 log.warning("model call failed task=%s model=%s attempt=%d kind=%s", request.task, ref, attempt, err.kind)
                 if not err.retryable or attempt == max_attempts:
                     break
-                self._sleep(self.backoff_delay(attempt))
+                delay = self.backoff_delay(attempt)
+                if err.retry_after:  # the provider told us how long to wait (capped)
+                    delay = max(delay, min(err.retry_after + 1, self.settings.backoff_max_s * 4))
+                self._sleep(delay)
         assert last is not None
         raise last
 
@@ -189,6 +207,7 @@ class ModelRouter:
                 last_error = perr
                 if perr.kind == "invalid_request":
                     break  # the request itself is bad; another model will not fix it
+
                 continue  # recoverable -> next candidate (fallback)
             except StructuredOutputError:
                 continue  # try fallback model
