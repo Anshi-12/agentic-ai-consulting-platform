@@ -1,0 +1,19 @@
+{
+  "notice": "Synthetic test labels only",
+  "technology": {
+    "query": "DemoSFP-10G compatibility with DemoRouter-X revision B",
+    "relevant_doc": "tech-demo.txt"
+  },
+  "clinical": {
+    "query": "SampleTray-200 accessory for LabScope-A",
+    "relevant_doc": "clinical-demo.txt"
+  },
+  "sec": {
+    "query": "ExampleCorp supplier concentration risks",
+    "relevant_doc": "sec-demo.txt"
+  },
+  "csr": {
+    "query": "solar powered cold storage reduces post harvest spoilage",
+    "relevant_doc": "csr-demo.txt"
+  }
+}

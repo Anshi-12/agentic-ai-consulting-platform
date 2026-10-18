@@ -1,0 +1,235 @@
+{
+  "project_id": "77777777-7777-4777-8777-777777777777",
+  "imported": [
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Covid/Analysis_and_Prediction_of_COVID-19_using_Machine_Learning.pdf",
+      "domain": "clinical",
+      "citation_filename": "Analysis_and_Prediction_of_COVID-19_using_Machine_Learning.pdf",
+      "document_id": "e037ea7b-9c22-4ccb-8312-4dbf50b8ee46",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Covid/Big_Data_Analytics_on_Irritating_Anxiety_of_Long_COVID.pdf",
+      "domain": "clinical",
+      "citation_filename": "Big_Data_Analytics_on_Irritating_Anxiety_of_Long_COVID.pdf",
+      "document_id": "0629894b-6ac4-40b6-a55f-d23308dc21c1",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Covid/COVID-19_Update_Forecast_and_Assistant_-_An_Interactive_Web_Portal_to_Provide_Real-Time_Information_and_Forecast_COVID-19_Cases_in_Bangladesh.pdf",
+      "domain": "clinical",
+      "citation_filename": "COVID-19_Update_Forecast_and_Assistant_-_An_Interactive_Web_Portal_to_Provide_Real-Time_Information_and_Forecast_COVID-19_Cases_in_Bangladesh.pdf",
+      "document_id": "5316e0ed-1716-4cb9-8fac-86123fb4a0e9",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Covid/COVID_Detection_using_Deep_Learning.pdf",
+      "domain": "clinical",
+      "citation_filename": "COVID_Detection_using_Deep_Learning.pdf",
+      "document_id": "ceb4a575-efe8-44fd-8431-d1c24a3abc80",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Covid/Extraction_of_Features_from_Lung_Image_for_the_Detection_of_Covid-19.pdf",
+      "domain": "clinical",
+      "citation_filename": "Extraction_of_Features_from_Lung_Image_for_the_Detection_of_Covid-19.pdf",
+      "document_id": "328dbff0-9f1c-444f-877f-65cd32b61408",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Diabetes/Artificial_Intelligence_and_Machine_Learning_for_Improving_Glycemic_Control_in_Diabetes_Best_Practices_Pitfalls_and_Opportunities.pdf",
+      "domain": "clinical",
+      "citation_filename": "Artificial_Intelligence_and_Machine_Learning_for_Improving_Glycemic_Control_in_Diabetes_Best_Practices_Pitfalls_and_Opportunities.pdf",
+      "document_id": "a772b33c-ca57-4dfa-8697-21e54a5bd30f",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Diabetes/Deep_Learning-Based_Genetic_Detection_and_Pathogenesis_of_Diabetes.pdf",
+      "domain": "clinical",
+      "citation_filename": "Deep_Learning-Based_Genetic_Detection_and_Pathogenesis_of_Diabetes.pdf",
+      "document_id": "631ed4a5-cc71-42df-aba8-6d66e5b49697",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Diabetes/Exploring_Biomarker_Relationships_in_Both_Type_1_and_Type_2_Diabetes_Mellitus_Through_a_Bayesian_Network_Analysis_Approach.pdf",
+      "domain": "clinical",
+      "citation_filename": "Exploring_Biomarker_Relationships_in_Both_Type_1_and_Type_2_Diabetes_Mellitus_Through_a_Bayesian_Network_Analysis_Approach.pdf",
+      "document_id": "9f91e3a6-1c34-4296-9825-5c8cd8fe8ccb",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Diabetes/Improving_Self-Management_of_Type_2_Diabetes_Evaluating_the_Effectiveness_of_a_Mobile_App-Based_Patient_Education_Approach.pdf",
+      "domain": "clinical",
+      "citation_filename": "Improving_Self-Management_of_Type_2_Diabetes_Evaluating_the_Effectiveness_of_a_Mobile_App-Based_Patient_Education_Approach.pdf",
+      "document_id": "2e2b3d78-41bc-4e5e-8339-444ebbe9fa51",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Diabetes/Knowledge-Infused_LLM-Powered_Conversational_Health_Agent_A_Case_Study_for_Diabetes_Patients.pdf",
+      "domain": "clinical",
+      "citation_filename": "Knowledge-Infused_LLM-Powered_Conversational_Health_Agent_A_Case_Study_for_Diabetes_Patients.pdf",
+      "document_id": "081fc92f-613a-472a-b47c-b91bb289ff64",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Heart_attack/Fog-Driven_Heart_Attack_Prediction_from_Wearable_Edge_Devices.pdf",
+      "domain": "clinical",
+      "citation_filename": "Fog-Driven_Heart_Attack_Prediction_from_Wearable_Edge_Devices.pdf",
+      "document_id": "7ef65c05-c2b4-43c6-8b22-c49f2233c5c2",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Heart_attack/IOT_Based_Heart_Rate_Monitoring_System_Design_for_Heart_Attack_Detection.pdf",
+      "domain": "clinical",
+      "citation_filename": "IOT_Based_Heart_Rate_Monitoring_System_Design_for_Heart_Attack_Detection.pdf",
+      "document_id": "ce6cfe7d-741e-4702-b86b-1773211a63a5",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Heart_attack/Machine_Learning_Approaches_for_Predicting_Heart_Attacks.pdf",
+      "domain": "clinical",
+      "citation_filename": "Machine_Learning_Approaches_for_Predicting_Heart_Attacks.pdf",
+      "document_id": "669fadb1-1b7b-4682-9612-96446ff2d2bb",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Heart_attack/Machine_Learning_Model_for_Heart_Disease_Detection_A_Comparative_Analysis_of_SVM_vs_KNN.pdf",
+      "domain": "clinical",
+      "citation_filename": "Machine_Learning_Model_for_Heart_Disease_Detection_A_Comparative_Analysis_of_SVM_vs_KNN.pdf",
+      "document_id": "5403977a-d590-4424-a3a6-e0753fe97e93",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/Heart_attack/Prediction_of_Heart_Disease_using_Machine_Learning_Technique.pdf",
+      "domain": "clinical",
+      "citation_filename": "Prediction_of_Heart_Disease_using_Machine_Learning_Technique.pdf",
+      "document_id": "f8b54556-21a9-45a2-ad17-2616fc1a143c",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/KneeInjuries/A_Comprehensive_Review_of_Knee_Abnormalities_Detection_Current_Procedures_Outcomes_and_Prospects.pdf",
+      "domain": "clinical",
+      "citation_filename": "A_Comprehensive_Review_of_Knee_Abnormalities_Detection_Current_Procedures_Outcomes_and_Prospects.pdf",
+      "document_id": "89d8b257-a3bc-4188-8598-095236f7cbcd",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/KneeInjuries/Design_and_Analysis_of_a_Knee_Exoskeleton_with_Self-alignment_Capability.pdf",
+      "domain": "clinical",
+      "citation_filename": "Design_and_Analysis_of_a_Knee_Exoskeleton_with_Self-alignment_Capability.pdf",
+      "document_id": "b7bbcacd-2daf-4fb4-97a1-835a9b028238",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/KneeInjuries/Design_and_control_of_a_novel_powered_wearable_knee_exoskeleton_for_lower_limb_rehabilitation.pdf",
+      "domain": "clinical",
+      "citation_filename": "Design_and_control_of_a_novel_powered_wearable_knee_exoskeleton_for_lower_limb_rehabilitation.pdf",
+      "document_id": "d68affad-7658-43e3-ba58-474878c5ca78",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/KneeInjuries/Development_of_a_Highlighting_System_for_Surgical_Instruments_in_Total_Knee_Arthroplasty.pdf",
+      "domain": "clinical",
+      "citation_filename": "Development_of_a_Highlighting_System_for_Surgical_Instruments_in_Total_Knee_Arthroplasty.pdf",
+      "document_id": "04dd97e6-ec1b-4a9b-849f-95b403050472",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/KneeInjuries/Knee_Fracture_Surgery_Monitoring_for_Advanced_Post-Operative_System_Using_IOT.pdf",
+      "domain": "clinical",
+      "citation_filename": "Knee_Fracture_Surgery_Monitoring_for_Advanced_Post-Operative_System_Using_IOT.pdf",
+      "document_id": "4543c8a8-4576-4b82-8c10-79610bbc2729",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "FoodSecurity.zip",
+      "member": "FoodSecurity/SOFI-2023.pdf",
+      "domain": "csr",
+      "citation_filename": "SOFI-2023.pdf",
+      "document_id": "611af82a-7081-47f6-ae4c-042625347a08",
+      "duplicate": true,
+      "status": "ready"
+    },
+    {
+      "archive": "FoodSecurity.zip",
+      "member": "FoodSecurity/SOFI-2024.pdf",
+      "domain": "csr",
+      "citation_filename": "SOFI-2024.pdf",
+      "document_id": "88e7114a-94ef-4794-956e-77824501943f",
+      "duplicate": true,
+      "status": "ready"
+    }
+  ],
+  "csv_inventory": [
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/ctg-studies_covid.csv",
+      "size_bytes": 17959076,
+      "status": "CATALOG_ONLY",
+      "note": "Large dataset; preview in notebook 11; not indexed as natural-language evidence"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/ctg-studies_diabetes.csv",
+      "size_bytes": 77581364,
+      "status": "CATALOG_ONLY",
+      "note": "Large dataset; preview in notebook 11; not indexed as natural-language evidence"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/ctg-studies_Hearattack.csv",
+      "size_bytes": 12297150,
+      "status": "CATALOG_ONLY",
+      "note": "Large dataset; preview in notebook 11; not indexed as natural-language evidence"
+    },
+    {
+      "archive": "Clinical.zip",
+      "member": "Clinical/ctg-studies_KneeInjuries.csv",
+      "size_bytes": 4225079,
+      "status": "CATALOG_ONLY",
+      "note": "Large dataset; preview in notebook 11; not indexed as natural-language evidence"
+    }
+  ],
+  "failures": [],
+  "important_note": "TXT sources are URL directories; SEC filings and IBM technical documents were not supplied."
+}
