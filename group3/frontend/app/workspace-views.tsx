@@ -26,10 +26,12 @@ const viewCopy: Record<Props['view'], { eyebrow: string; title: string; descript
 export function WorkspaceView({ view, project, workflow, outputs, evidence, auditEvents }: Props) {
   const copy = viewCopy[view];
   return <div className="mt-7">
-    <div className="mb-6 border-b border-meridian-line pb-5">
-      <div className="text-[10px] font-extrabold uppercase tracking-[.14em] text-meridian-cyan">{copy.eyebrow}</div>
-      <h1 className="mt-2 text-[30px] font-extrabold tracking-[-.045em]">{copy.title}</h1>
-      <p className="mt-2 text-sm text-meridian-muted">{copy.description}</p>
+    <div className="mb-5 rounded-xl border border-meridian-line bg-white p-6 shadow-[0_12px_32px_rgba(18,42,64,.05)]">
+      <div className="flex items-start justify-between gap-5 max-[650px]:block">
+        <div><div className="text-[10px] font-extrabold uppercase tracking-[.14em] text-meridian-cyan">{copy.eyebrow}</div><h1 className="mt-2 text-[30px] font-extrabold tracking-[-.045em]">{copy.title}</h1><p className="mt-2 max-w-2xl text-sm leading-relaxed text-meridian-muted">{copy.description}</p></div>
+        <div className="rounded-full bg-[#edf9f6] px-3 py-2 text-[10px] font-extrabold uppercase text-[#147b77] max-[650px]:mt-4">{workflow ? workflow.status.replace('_', ' ') : 'Workspace ready'}</div>
+      </div>
+      <div className="mt-5 flex flex-wrap gap-2 text-[10px] font-extrabold uppercase tracking-[.08em] text-meridian-muted"><span className="rounded bg-[#f3f7f9] px-2 py-1.5">Harbor National Bank</span><span className="rounded bg-[#f3f7f9] px-2 py-1.5">Evidence-backed</span><span className="rounded bg-[#fff9e7] px-2 py-1.5 text-[#8b6a2e]">Manager review required</span></div>
     </div>
     {view === 'projects' && <Projects project={project} />}
     {view === 'intake' && <Intake project={project} />}
@@ -42,11 +44,11 @@ export function WorkspaceView({ view, project, workflow, outputs, evidence, audi
 }
 
 function Card({ title, children, className = '' }: { title: string; children: React.ReactNode; className?: string }) {
-  return <section className={`rounded-lg border border-meridian-line bg-white p-5 ${className}`}><h2 className="mb-4 text-sm font-extrabold">{title}</h2>{children}</section>;
+  return <section className={`rounded-xl border border-meridian-line bg-white p-5 shadow-[0_10px_28px_rgba(18,42,64,.04)] ${className}`}><div className="mb-4 flex items-center justify-between border-b border-meridian-line pb-3"><h2 className="m-0 text-sm font-extrabold">{title}</h2><span className="text-[9px] font-extrabold uppercase tracking-[.1em] text-meridian-muted">Project workspace</span></div>{children}</section>;
 }
 
 function Label({ children }: { children: React.ReactNode }) { return <div className="mb-1 text-[10px] font-extrabold uppercase tracking-[.12em] text-meridian-muted">{children}</div>; }
-function EmptyState({ title, detail }: { title: string; detail: string }) { return <div className="rounded-md border border-dashed border-[#cbd9dd] bg-[#f8fbfb] p-8 text-center"><div className="text-sm font-extrabold">{title}</div><p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-meridian-muted">{detail}</p></div>; }
+function EmptyState({ title, detail }: { title: string; detail: string }) { return <div className="rounded-xl border border-dashed border-[#cbd9dd] bg-[#f8fbfb] p-10 text-center"><div className="mx-auto grid h-9 w-9 place-items-center rounded-full bg-[#e8f5f3] text-sm font-extrabold text-[#287f82]">—</div><div className="mt-3 text-sm font-extrabold">{title}</div><p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-meridian-muted">{detail}</p></div>; }
 
 function Projects({ project }: { project: Project | null }) {
   return <div className="grid gap-4 md:grid-cols-[1.2fr_.8fr]">

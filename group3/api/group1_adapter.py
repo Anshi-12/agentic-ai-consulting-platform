@@ -19,7 +19,17 @@ def _get_service():
     if _service is None:
         from backend.api.service import ConsultingService
         from backend.config import get_settings
-        _service = ConsultingService(settings=get_settings(), background=True)
+        from .group2_data_module import Group2DataModule
+        _service = ConsultingService(
+            settings=get_settings(),
+            background=True,
+            executor=None,
+        )
+        # Replace the default in-memory source at the integration boundary.
+        # This keeps Group 1 unchanged while routing its tools through Group 2.
+        _service.executor.data = Group2DataModule()
+        _service.executor.tools.data = _service.executor.data
+        _service.executor.runtime.data = _service.executor.data
     return _service
 
 def _execution_principal(user: User, execution_id: str):

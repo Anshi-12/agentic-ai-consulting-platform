@@ -90,15 +90,13 @@ test('completes clarification, approval, and report generation', async ({ page }
     }) });
   });
 
-  await page.on('dialog', async dialog => {
-    await dialog.accept('Increase 90-day primary deposit retention from 64% to 70% within 90 days.');
-  });
   await page.goto('/');
   await page.getByRole('button', { name: 'Open engagement' }).click();
   await page.getByRole('button', { name: 'Run next analysis' }).click();
   await expect(page.getByText(/awaiting input/i)).toBeVisible();
 
-  await page.getByRole('button', { name: 'Approve workflow' }).click();
+  await page.getByPlaceholder(/Type your answer/i).fill('Increase 90-day primary deposit retention from 64% to 70% within 90 days.');
+  await page.getByRole('button', { name: 'Send direction' }).click();
   await expect(page.getByText(/human[_ ]approval/i)).toBeVisible();
   await page.getByRole('button', { name: 'Approve workflow' }).click();
   await expect(page.getByText(/completed/i)).toBeVisible();
