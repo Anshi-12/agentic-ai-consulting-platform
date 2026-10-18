@@ -1,0 +1,85 @@
+{
+  "family": "consolidation",
+  "task": "consolidate",
+  "schema": "ConsultingAnswer",
+  "note": "Synthetic examples. Evidence IDs are invented for illustration.",
+  "examples": [
+    {
+      "id": "con-tech-single",
+      "industry": "High technology - networking",
+      "difficulty": "medium",
+      "input": {
+        "question": "Our Cisco edge router has intermittent connectivity failures. What should we order and how do we prevent outages?",
+        "agent_answers": {"technology": {"answer": "Interface modules and power supplies are field-replaceable; failure cause unconfirmed.", "findings": [{"statement": "Interface modules are field-replaceable.", "evidence_ids": ["EX-T1"], "claim_type": "fact"}, {"statement": "Overheating may cause drops.", "evidence_ids": ["EX-T1"], "claim_type": "hypothesis"}], "missing_information": ["Interface error counters"]}}
+      },
+      "output": {
+        "headline": "Diagnose before you buy: confirm the failing component, then replace the interface module and add monitoring.",
+        "summary": "Documentation shows interface modules and power supplies are field-replaceable [EX-T1], but nothing confirms which part failed. Collect diagnostics first so procurement targets the actual fault.",
+        "domains_consulted": ["technology"],
+        "next_actions": [
+          {"action": "Pull interface error counters, syslog and temperature readings for the last 30 days", "why": "The failure cause is a hypothesis until diagnostics confirm it", "expected_impact": "Avoids ordering the wrong part", "metric": "Root cause identified", "target": "Yes, within 5 business days", "timeframe": "1 week", "owner": "Network operations", "priority": 1, "domains": ["technology"], "evidence_ids": ["EX-T1"], "claim_type": "fact", "confidence": 0.8},
+          {"action": "Stock one spare interface module and enable proactive alerting on interface errors", "why": "Field-replaceable modules shorten repair time", "expected_impact": "Lower outage duration", "metric": "Mean time to repair", "target": "Under 2 hours", "timeframe": "1 month", "owner": "Network operations", "priority": 2, "domains": ["technology"], "evidence_ids": ["EX-T1"], "claim_type": "hypothesis", "confidence": 0.55}
+        ],
+        "cross_domain_insights": [],
+        "risks": ["Replacing hardware without diagnostics may not fix the issue"],
+        "confirmed_facts": ["Interface modules are field-replaceable [EX-T1]"],
+        "hypotheses": ["Overheating or a failing interface module causes the drops"],
+        "missing_information": ["Interface error counters", "Exact router model"],
+        "overall_confidence": 0.6,
+        "uncertainty_note": "Root cause is unconfirmed; recommendations are staged so spending follows diagnosis."
+      }
+    },
+    {
+      "id": "con-cross-domain",
+      "industry": "Diagnostics - vendor selection",
+      "difficulty": "hard",
+      "input": {
+        "question": "Should we commit to Agilent for a five-year digital pathology rollout?",
+        "agent_answers": {
+          "clinical": {"answer": "Agilent offers whole-slide imaging scanners for pathology labs.", "findings": [{"statement": "Agilent markets whole-slide imaging scanners.", "evidence_ids": ["EX-C1"], "claim_type": "fact"}]},
+          "sec": {"answer": "Filing reports revenue by segment and lists competition and supply-chain risks.", "findings": [{"statement": "The company cites intense competition as a risk.", "evidence_ids": ["EX-S2"], "claim_type": "fact"}]}
+        }
+      },
+      "output": {
+        "headline": "Proceed with a scanner pilot while building vendor-risk safeguards into the contract.",
+        "summary": "Clinical evidence confirms a fitting whole-slide imaging product line [EX-C1]; the vendor's filing flags competition and supply risks [EX-S2], which a five-year commitment should hedge.",
+        "domains_consulted": ["clinical", "sec"],
+        "next_actions": [
+          {"action": "Run a 90-day scanner pilot on representative slide volumes", "why": "Confirms throughput fit before a long commitment", "expected_impact": "Evidence-based go/no-go", "metric": "Slides scanned per day at target quality", "target": "Meets lab volume requirement", "timeframe": "90 days", "owner": "Lab director", "priority": 1, "domains": ["clinical"], "evidence_ids": ["EX-C1"], "claim_type": "fact", "confidence": 0.7},
+          {"action": "Add service-level, parts-availability and exit clauses to the contract", "why": "Filing cites competitive and supply-chain risks", "expected_impact": "Limits exposure if vendor conditions change", "metric": "Contract includes SLA and exit terms", "target": "Signed before rollout", "timeframe": "Before purchase", "owner": "Procurement", "priority": 2, "domains": ["sec"], "evidence_ids": ["EX-S2"], "claim_type": "fact", "confidence": 0.7}
+        ],
+        "cross_domain_insights": ["Product fit and vendor stability point the same way: pilot first, commit with safeguards."],
+        "risks": ["Vendor supply-chain disruption", "Pilot volume not representative"],
+        "confirmed_facts": ["Whole-slide imaging scanners are offered [EX-C1]", "Competition is a disclosed risk [EX-S2]"],
+        "hypotheses": [],
+        "missing_information": ["Lab's daily slide volume", "Budget"],
+        "overall_confidence": 0.68,
+        "uncertainty_note": "Scanner throughput claims were not quantified in the evidence."
+      }
+    },
+    {
+      "id": "con-insufficient",
+      "industry": "Unspecified",
+      "difficulty": "ambiguous",
+      "input": {
+        "question": "What will our ROI be from switching suppliers?",
+        "agent_answers": {"sec": {"answer": "No relevant evidence.", "findings": [], "insufficient_evidence": true, "missing_information": ["Supplier cost data", "Current spend"]}}
+      },
+      "output": {
+        "headline": "Not enough evidence to estimate ROI yet; gather supplier cost data first.",
+        "summary": "No retrieved evidence addresses supplier switching costs or savings, so any ROI figure would be invented.",
+        "domains_consulted": ["sec"],
+        "next_actions": [
+          {"action": "Collect current spend, quoted prices and switching costs for both suppliers", "why": "ROI cannot be calculated without these inputs", "expected_impact": "Enables a calculated ROI", "metric": "Inputs collected", "target": "All three inputs", "timeframe": "2 weeks", "owner": "Procurement", "priority": 1, "domains": ["sec"], "evidence_ids": [], "claim_type": "assumption", "confidence": 0.5}
+        ],
+        "cross_domain_insights": [],
+        "risks": [],
+        "confirmed_facts": [],
+        "hypotheses": [],
+        "missing_information": ["Supplier cost data", "Current spend"],
+        "overall_confidence": 0.2,
+        "uncertainty_note": "Insufficient evidence; no numbers were generated."
+      }
+    }
+  ]
+}

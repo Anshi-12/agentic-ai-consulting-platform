@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout recommender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F5F7; --sheet:#FFFFFF; --ink:#17212B; --muted:#5B6773; --rule:#D3DAE1;
+  --steel:#2F5D8A; --steel-bg:#E4ECF4; --amber:#B07A06; --amber-bg:#FBF1DC; --green:#2E7D5B; --green-bg:#E3F1EA;
+  --brick:#A8432F; --brick-bg:#F7E4E0;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 var(--sans)}
+a{color:var(--steel)}
+header{padding:20px 24px 0;max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+header h1{font-size:22px;font-weight:600;margin:0}
+header nav a{margin-left:16px;font-size:14px}
+.sub{max-width:1180px;margin:2px auto 0;padding:0 24px;color:var(--muted);font-size:14px}
+main{max-width:1180px;margin:0 auto;padding:16px 24px 48px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+@media (max-width:860px){main{grid-template-columns:minmax(0,1fr);padding:12px 16px 40px}header{padding:16px 16px 0}.sub,footer{padding-left:16px;padding-right:16px}header nav a{margin:0 16px 0 0}.pick{flex-wrap:wrap}}
+section{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:18px 20px}
+h2{font-size:15px;font-weight:600;margin:0 0 10px}
+label{font-size:14px;color:var(--muted)}
+.pick{display:flex;gap:8px;margin-top:6px}
+select{flex:1;min-width:0;font:inherit;padding:8px 10px;border:1px solid var(--rule);border-radius:4px;background:#fff;color:var(--ink)}
+button{font:inherit;font-weight:500;border-radius:4px;border:1px solid var(--steel);padding:8px 14px;cursor:pointer;background:var(--steel);color:#fff}
+button.link{background:none;border:none;color:var(--steel);padding:0 4px;font-weight:400}
+select:focus,button:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+.sku{font-size:12px;color:var(--muted)}
+ul.cart{list-style:none;padding:0;margin:14px 0 0}
+ul.cart li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--rule);padding:9px 0}
+ul.cart li.fresh{animation:land .6s ease-out}
+@keyframes land{from{background:var(--green-bg)}to{background:transparent}}
+@media (prefers-reduced-motion:reduce){ul.cart li.fresh{animation:none}}
+.empty{color:var(--muted)}
+.status{font-size:14px;padding:10px 12px;border-radius:4px;background:var(--steel-bg);margin-bottom:12px}
+.status.warn{background:var(--amber-bg)}
+ol.recs{list-style:none;padding:0;margin:0}
+ol.recs li{border:1px solid var(--rule);border-radius:6px;padding:12px 14px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:start}
+ol.recs .name{font-weight:600}
+ol.recs .why{grid-column:1/-1;font-size:13px;color:var(--muted)}
+.strength{display:flex;align-items:center;gap:8px;font-size:12px;grid-column:1/-1}
+.strength .bar{width:110px;height:6px;background:var(--rule);border-radius:3px;overflow:hidden}
+.strength .bar i{display:block;height:100%}
+.tag{font-size:12px;padding:1px 8px;border-radius:10px}
+.weak{background:var(--brick-bg);color:var(--brick)} .moderate{background:var(--amber-bg);color:var(--amber)} .strong{background:var(--green-bg);color:var(--green)}
+footer{max-width:1180px;margin:0 auto;padding:0 24px 32px;font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Electronic security store · checkout</h1>
+  <nav><a href="/">Home</a><a href="/consult">Consulting coworker</a><a href="/docs">API</a></nav>
+</header>
+<p class="sub">Add items to the cart. Suggestions update for the whole cart each time, based on past orders.</p>
+<main>
+  <section>
+    <h2>Your cart</h2>
+    <label for="item">Select an item</label>
+    <div class="pick"><select id="item"></select><button id="add">Add item</button></div>
+    <ul class="cart" id="cart"><li class="empty">Your cart is empty.</li></ul>
+  </section>
+  <section>
+    <h2>Frequently bought with your cart</h2>
+    <div id="status" class="status">Add an item to see suggestions.</div>
+    <ol class="recs" id="recs"></ol>
+  </section>
+</main>
+<footer id="model"></footer>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const split = s => { const m = s.match(/^(.*) \(SKU: (.*)\)$/); return m ? [m[1], m[2]] : [s, ""]; };
+let cart = [], lastAdded = null;
+
+async function api(path, body) {
+  const r = await fetch(path, body ? {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(body)} : {});
+  const data = await r.json(); if (!r.ok) throw new Error(data.detail || r.statusText); return data;
+}
+
+async function init() {
+  try {
+    const {items} = await api("/api/v1/recommender/items");
+    $("item").innerHTML = items.map(i => `<option value="${esc(i.item)}">${esc(i.item)}</option>`).join("");
+    const m = await api("/api/v1/recommender/model");
+    $("model").textContent = `Model v${m.version} · trained on ${m.transactions.toLocaleString()} orders, ${m.items} products · min support ${m.params.min_support_count} orders, lift ≥ ${m.params.min_lift}${m.params.backoff ? ", partial-cart backoff on" : ""}. Evidence strength is a hypergeometric test of co-purchases against chance.`;
+  } catch (e) { $("status").className = "status warn"; $("status").textContent = `Recommender unavailable: ${e.message}`; }
+}
+
+function renderCart() {
+  $("cart").innerHTML = cart.length ? cart.map(c => { const [n, sku] = split(c);
+    return `<li class="${c === lastAdded ? "fresh" : ""}"><span>${esc(n)} <span class="sku">SKU ${esc(sku)}</span></span><button class="link" data-rm="${esc(c)}" aria-label="Remove ${esc(n)}">Remove</button></li>`; }).join("")
+    : `<li class="empty">Your cart is empty.</li>`;
+  document.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { cart = cart.filter(x => x !== b.dataset.rm); lastAdded = null; update(); });
+}
+
+async function update() {
+  renderCart();
+  const r = await api("/api/v1/recommender/recommend", {cart, top_k: 5});
+  $("status").className = "status" + (r.recommendations.length ? "" : " warn");
+  $("status").textContent = r.message || (cart.length ? `Based on ${cart.length} item(s) in your cart.` : "");
+  const maxLift = Math.max(2, ...r.recommendations.map(x => x.lift));
+  $("recs").innerHTML = r.recommendations.map(x => { const [n, sku] = split(x.item);
+    return `<li><div><div class="name">${esc(n)}</div><div class="sku">SKU ${esc(sku)}</div></div>
+      <button data-add="${esc(x.item)}">Add</button>
+      <div class="why">${esc(x.explanation)}</div>
+      <div class="strength"><div class="bar"><i style="width:${Math.min(100, Math.round(x.lift / maxLift * 100))}%;background:${x.evidence_strength === "strong" ? "var(--green)" : x.evidence_strength === "moderate" ? "var(--amber)" : "var(--brick)"}"></i></div>
+      <span class="tag ${x.evidence_strength}">${x.evidence_strength} evidence</span><span>lift ${x.lift.toFixed(2)} · p=${x.p_value.toFixed(3)}</span></div></li>`; }).join("");
+  document.querySelectorAll("[data-add]").forEach(b => b.onclick = () => { api("/api/v1/recommender/feedback", {item: b.dataset.add, accepted: true}); addItem(b.dataset.add); });
+}
+
+function addItem(item) { if (!item || cart.includes(item)) return; cart.push(item); lastAdded = item; update(); }
+$("add").onclick = () => addItem($("item").value);
+init();
+</script>
+</body>
+</html>

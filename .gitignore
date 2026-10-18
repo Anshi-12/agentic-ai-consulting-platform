@@ -1,0 +1,18 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+data/
+outputs/
+backend/evaluation/results/
+*.sqlite
+.DS_Store
+
+# Group 3 frontend build output and local runtime files
+group3/frontend/.next/
+group3/frontend/node_modules/
+group3/frontend/test-results/
+group3/frontend/playwright-report/
+*.db

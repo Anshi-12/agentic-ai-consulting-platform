@@ -1,0 +1,24 @@
+{"id": "q01", "domain": "corporate_responsibility", "query": "main causes behind rising hunger and food insecurity", "filters": {"year": 2023}, "expect": {"year": 2023, "text_regex": "conflict, climate extremes"}}
+{"id": "q02", "domain": "corporate_responsibility", "query": "how much money is needed to eliminate hunger and malnutrition", "filters": {"year": 2024}, "expect": {"year": 2024, "text_regex": "financ"}}
+{"id": "q03", "domain": "corporate_responsibility", "query": "people unable to afford a nutritious diet", "filters": {}, "expect": {"text_regex": "afford a healthy diet|cost of a healthy diet"}}
+{"id": "q04", "domain": "corporate_responsibility", "query": "city growth changes what people eat", "filters": {"year": 2023}, "expect": {"year": 2023, "text_regex": "urbaniz"}}
+{"id": "q05", "domain": "corporate_responsibility", "query": "war and armed violence effect on hunger", "filters": {}, "expect": {"text_regex": "conflict"}}
+{"id": "q06", "domain": "corporate_responsibility", "query": "inflation of food prices and household access to food", "filters": {}, "expect": {"text_regex": "price"}}
+{"id": "q07", "domain": "sec", "query": "Agilent business segments", "filters": {"company": "Agilent"}, "expect": {"company": "Agilent", "text_regex": "Life Sciences and Diagnostics|CrossLab|Applied Markets"}}
+{"id": "q08", "domain": "sec", "query": "Agilent competitors and competitive pressure", "filters": {"company": "Agilent"}, "expect": {"company": "Agilent", "text_regex": "compet"}}
+{"id": "q09", "domain": "sec", "query": "Agilent import duties trade policy impact", "filters": {"company": "Agilent"}, "expect": {"company": "Agilent", "text_regex": "tariff"}}
+{"id": "q10", "domain": "sec", "query": "Cisco acquisition of Splunk", "filters": {"company": "Cisco"}, "expect": {"company": "Cisco", "text_regex": "Splunk"}}
+{"id": "q11", "domain": "sec", "query": "Cisco component shortages and supplier disruption", "filters": {"company": "Cisco"}, "expect": {"company": "Cisco", "text_regex": "supply chain|supplier|component"}}
+{"id": "q12", "domain": "sec", "query": "Cisco networking revenue change", "filters": {"company": "Cisco"}, "expect": {"company": "Cisco", "text_regex": "Networking product category"}}
+{"id": "q13", "domain": "sec", "query": "Alphabet cloud computing business", "filters": {"company": "Alphabet"}, "expect": {"company": "Alphabet", "text_regex": "Google Cloud"}}
+{"id": "q14", "domain": "sec", "query": "Alphabet competition law investigations", "filters": {"company": "Alphabet"}, "expect": {"company": "Alphabet", "text_regex": "antitrust|competition"}}
+{"id": "q15", "domain": "clinical", "query": "wearable robot to assist knee rehabilitation", "filters": {}, "expect": {"text_regex": "exoskeleton"}}
+{"id": "q16", "domain": "clinical", "query": "AI for blood sugar management in diabetes", "filters": {}, "expect": {"text_regex": "glycemic|glucose"}}
+{"id": "q17", "domain": "clinical", "query": "support vector machine versus nearest neighbours heart disease", "filters": {}, "expect": {"text_regex": "KNN|SVM"}}
+{"id": "q18", "domain": "clinical", "query": "mental health and anxiety after long covid", "filters": {}, "expect": {"text_regex": "anxiety"}}
+{"id": "q19", "domain": "clinical", "query": "probabilistic graphical model of diabetes biomarkers", "filters": {}, "expect": {"text_regex": "Bayesian"}}
+{"id": "q20", "domain": "clinical", "query": "covid case forecasting portal for Bangladesh", "filters": {}, "expect": {"text_regex": "Bangladesh"}}
+{"id": "q21", "domain": "clinical", "query": "surgical instrument tracking during total knee replacement", "filters": {}, "expect": {"text_regex": "arthroplasty|surgical instrument"}}
+{"id": "q22", "domain": "technology", "query": "software router for public cloud", "filters": {}, "expect": {"text_regex": "8000V"}}
+{"id": "q23", "domain": "technology", "query": "aggregation router with redundant route processors", "filters": {}, "expect": {"text_regex": "ASR 1000"}}
+{"id": "q24", "domain": "technology", "query": "retrieval augmented generation on Google Cloud", "filters": {}, "expect": {"text_regex": "retrieval|RAG"}}
