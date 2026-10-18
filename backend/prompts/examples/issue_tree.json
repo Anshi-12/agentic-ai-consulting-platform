@@ -1,0 +1,113 @@
+{
+  "family": "issue_tree",
+  "task": "problem_structuring",
+  "schema": "StructuringOutput",
+  "note": "Synthetic examples. No real client data.",
+  "examples": [
+    {
+      "id": "it-coffee-easy",
+      "industry": "Food service - specialty coffee chain",
+      "difficulty": "easy",
+      "input": {
+        "problem_statement": {
+          "summary": "A 60-store specialty coffee chain has seen same-store sales fall 7% year over year.",
+          "key_question": "Why are same-store sales declining and how can the chain return to growth within a year?",
+          "business_objectives": ["Return same-store sales to growth"]
+        }
+      },
+      "output": {
+        "issue_tree": {
+          "id": "Q0", "question": "Why are same-store sales declining and how can the chain return to growth?", "hypothesis_ids": [],
+          "children": [
+            {"id": "Q1", "question": "Is traffic (transactions) falling?", "hypothesis_ids": ["H1"], "children": []},
+            {"id": "Q2", "question": "Is average ticket falling?", "hypothesis_ids": ["H2"], "children": []}
+          ]
+        },
+        "hypotheses": [
+          {"id": "H1", "statement": "Morning traffic has shifted to new drive-through competitors.", "rationale": "Sales = traffic x ticket; competitor openings reported", "workstream_id": "WS1", "required_evidence": ["Transactions by daypart", "Competitor opening dates"]},
+          {"id": "H2", "statement": "Fewer customers add food items, lowering average ticket.", "rationale": "Food attach rate is a common ticket driver", "workstream_id": "WS2", "required_evidence": ["Attach rate trend", "Menu mix"]}
+        ],
+        "workstreams": [
+          {"id": "WS1", "name": "Traffic", "objective": "Explain transaction decline", "analytical_questions": ["Which dayparts lost traffic?", "Do declines correlate with competitor openings?"], "required_evidence": ["POS transactions", "Competitor map"], "search_queries": ["transactions daypart traffic", "competitor drive-through openings"], "depends_on": [], "frameworks": ["Customer segmentation"]},
+          {"id": "WS2", "name": "Ticket", "objective": "Explain changes in average ticket", "analytical_questions": ["How has food attach rate changed?"], "required_evidence": ["POS line items"], "search_queries": ["average ticket food attach rate"], "depends_on": [], "frameworks": []}
+        ],
+        "frameworks": [{"name": "Customer segmentation", "applies_to": "WS1", "rationale": "Commuter and leisure customers behave differently"}],
+        "mece_check": {"is_mece": true, "notes": "Same-store sales decomposes exactly into traffic and ticket."}
+      }
+    },
+    {
+      "id": "it-pumps-medium",
+      "industry": "Industrial manufacturing - pumps",
+      "difficulty": "medium",
+      "input": {
+        "problem_statement": {
+          "summary": "An industrial pump manufacturer earns 90% of revenue from new equipment and wants to build an aftermarket services business.",
+          "key_question": "Should the company build an aftermarket services business, and if so, how should it enter?",
+          "business_objectives": ["Grow recurring revenue", "Reduce cyclicality"]
+        }
+      },
+      "output": {
+        "issue_tree": {
+          "id": "Q0", "question": "Should the company build an aftermarket services business, and how?", "hypothesis_ids": [],
+          "children": [
+            {"id": "Q1", "question": "Is the aftermarket attractive?", "hypothesis_ids": ["H1"], "children": [
+              {"id": "Q1.1", "question": "How large and profitable is the addressable installed base?", "hypothesis_ids": ["H1"], "children": []}
+            ]},
+            {"id": "Q2", "question": "Can the company win against independent service providers?", "hypothesis_ids": ["H2"], "children": []},
+            {"id": "Q3", "question": "What entry model maximizes value (build, partner, acquire)?", "hypothesis_ids": ["H3"], "children": []}
+          ]
+        },
+        "hypotheses": [
+          {"id": "H1", "statement": "The installed base supports a services market with margins above new-equipment margins.", "rationale": "Aftermarket margins are typically higher", "workstream_id": "WS1", "required_evidence": ["Installed base size", "Service pricing benchmarks"]},
+          {"id": "H2", "statement": "OEM parts knowledge gives a defensible advantage over independents.", "rationale": "Proprietary parts and data", "workstream_id": "WS2", "required_evidence": ["Customer purchase criteria", "Competitor share"]},
+          {"id": "H3", "statement": "A partner-led entry reaches scale faster than an organic build.", "rationale": "Field-service capability gap", "workstream_id": "WS3", "required_evidence": ["Capability assessment", "Partner landscape"]}
+        ],
+        "workstreams": [
+          {"id": "WS1", "name": "Market attractiveness", "objective": "Size and profitability of the aftermarket", "analytical_questions": ["What is the installed base by segment?", "What margins do services earn?"], "required_evidence": ["Shipment history", "Benchmarks"], "search_queries": ["installed base pump aftermarket size", "industrial service margins benchmark"], "depends_on": [], "frameworks": ["Porter's Five Forces"]},
+          {"id": "WS2", "name": "Right to win", "objective": "Assess competitive position", "analytical_questions": ["What do customers value in service providers?"], "required_evidence": ["Customer interviews"], "search_queries": ["customer purchase criteria service provider"], "depends_on": ["WS1"], "frameworks": ["Value chain analysis"]},
+          {"id": "WS3", "name": "Entry model", "objective": "Compare build, partner and acquire", "analytical_questions": ["What capabilities are missing?", "What would each model cost?"], "required_evidence": ["Capability inventory", "Target list"], "search_queries": ["field service partner acquisition options"], "depends_on": ["WS1", "WS2"], "frameworks": ["SWOT"]}
+        ],
+        "frameworks": [
+          {"name": "Porter's Five Forces", "applies_to": "WS1", "rationale": "Assess profit pool structure"},
+          {"name": "Value chain analysis", "applies_to": "WS2", "rationale": "Locate OEM advantages"},
+          {"name": "SWOT", "applies_to": "WS3", "rationale": "Summarize capability fit per entry model"}
+        ],
+        "mece_check": {"is_mece": true, "notes": "Where to play (attractiveness), how to win, and how to enter are distinct and complete."}
+      }
+    },
+    {
+      "id": "it-airline-hard",
+      "industry": "Transportation - regional airline",
+      "difficulty": "hard",
+      "input": {
+        "problem_statement": {
+          "summary": "A regional airline's on-time performance fell from 82% to 68%; delays cascade through a hub-and-spoke network. Data quality on delay codes is poor.",
+          "key_question": "What is driving the on-time performance decline and which interventions restore performance above 80%?",
+          "business_objectives": ["Restore on-time performance above 80%"]
+        }
+      },
+      "output": {
+        "issue_tree": {
+          "id": "Q0", "question": "What drives the on-time decline and which interventions restore it?", "hypothesis_ids": [],
+          "children": [
+            {"id": "Q1", "question": "Are initial (root) delays increasing?", "hypothesis_ids": ["H1", "H2"], "children": []},
+            {"id": "Q2", "question": "Is the schedule less able to absorb delays (propagation)?", "hypothesis_ids": ["H3"], "children": []}
+          ]
+        },
+        "hypotheses": [
+          {"id": "H1", "statement": "Aircraft maintenance delays have risen as the fleet ages.", "rationale": "Mechanical delay codes trending up", "workstream_id": "WS1", "required_evidence": ["Maintenance logs"]},
+          {"id": "H2", "statement": "Ground-handling turnarounds at the hub exceed scheduled times.", "rationale": "Hub staffing changes", "workstream_id": "WS2", "required_evidence": ["Turnaround timestamps"]},
+          {"id": "H3", "statement": "Schedule buffers were cut, so delays propagate further.", "rationale": "Utilization push last year", "workstream_id": "WS3", "required_evidence": ["Scheduled block times", "Delay propagation analysis"]}
+        ],
+        "workstreams": [
+          {"id": "WS0", "name": "Delay data reconstruction", "objective": "Rebuild reliable delay attribution because delay codes are unreliable", "analytical_questions": ["Can timestamps replace delay codes for attribution?"], "required_evidence": ["Raw flight timestamps"], "search_queries": ["flight timestamps delay attribution data"], "depends_on": [], "frameworks": []},
+          {"id": "WS1", "name": "Maintenance", "objective": "Quantify mechanical root delays", "analytical_questions": ["How have mechanical delays changed by aircraft age?"], "required_evidence": ["Maintenance logs"], "search_queries": ["maintenance mechanical delay fleet age"], "depends_on": ["WS0"], "frameworks": ["Value chain analysis"]},
+          {"id": "WS2", "name": "Ground operations", "objective": "Quantify turnaround overruns", "analytical_questions": ["Which turnaround steps overrun most?"], "required_evidence": ["Turnaround timestamps"], "search_queries": ["hub turnaround ground handling overrun"], "depends_on": ["WS0"], "frameworks": []},
+          {"id": "WS3", "name": "Schedule resilience", "objective": "Measure delay propagation and buffer adequacy", "analytical_questions": ["How much did buffers shrink?", "How far do delays propagate?"], "required_evidence": ["Schedule history"], "search_queries": ["schedule buffer block time propagation"], "depends_on": ["WS1", "WS2"], "frameworks": []}
+        ],
+        "frameworks": [{"name": "Value chain analysis", "applies_to": "WS1", "rationale": "Trace delay sources across the operation"}],
+        "mece_check": {"is_mece": false, "notes": "Root delays and propagation interact; WS0 is a data prerequisite rather than a branch. Treat overlap explicitly when attributing impact."}
+      }
+    }
+  ]
+}

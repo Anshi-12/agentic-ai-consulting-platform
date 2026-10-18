@@ -1,0 +1,34 @@
+{
+  "notice": "SYNTHETIC EXAMPLE \u2014 not real compatibility data",
+  "technology": [
+    {
+      "candidate_id": "demo-sfp10",
+      "name": "DemoSFP-10G",
+      "kind": "replacement_part",
+      "compatible_models": [
+        "DemoRouter-X revision B"
+      ],
+      "required_terms": [
+        "10G"
+      ]
+    },
+    {
+      "candidate_id": "demo-zfiber",
+      "name": "ZFiber-1G",
+      "kind": "replacement_part",
+      "compatible_models": [
+        "DemoRouter-Z revision A"
+      ]
+    }
+  ],
+  "csr": [
+    {
+      "candidate_id": "solar-cold-storage",
+      "name": "Solar-powered cold storage",
+      "kind": "action",
+      "required_terms": [
+        "food spoilage"
+      ]
+    }
+  ]
+}

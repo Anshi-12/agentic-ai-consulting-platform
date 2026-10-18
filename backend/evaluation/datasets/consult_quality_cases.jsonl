@@ -1,0 +1,8 @@
+{"id": "c01", "question": "List major food insecurity reasons in 2023 from the State of Food Security and Nutrition in the World report.", "domains": ["corporate_responsibility"], "expected_terms": ["conflict", "climate", "economic"]}
+{"id": "c02", "question": "Explain malnutrition in war zones", "domains": ["corporate_responsibility"], "expected_terms": ["conflict"]}
+{"id": "c03", "question": "Explain increase prices impact on food security", "domains": ["corporate_responsibility"], "expected_terms": ["price"]}
+{"id": "c04", "question": "What are the financial, competitive, and operational risks associated with Cisco and Agilent?", "domains": ["sec"], "expected_terms": ["risk", "compet"]}
+{"id": "c05", "question": "Our pathology lab wants to digitize glass slides. Which Agilent scanner fits?", "domains": ["clinical"], "expected_terms": ["slide"]}
+{"id": "c06", "question": "Our Cisco enterprise router is experiencing intermittent connectivity failures. Which replacement parts should we order, and what actions should we take to prevent future outages?", "domains": ["technology"], "expected_terms": ["cisco"]}
+{"id": "c07", "question": "How many recruiting phase 3 diabetes trials are there and who sponsors them?", "domains": ["clinical"], "expected_terms": ["trial"]}
+{"id": "c08", "question": "Should we commit to Agilent for a digital pathology rollout? Assess the scanner fit and Agilent's financial risks.", "domains": ["clinical", "sec"], "expected_terms": ["agilent"]}

@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consulting coworker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F5F7; --sheet:#FFFFFF; --ink:#17212B; --muted:#5B6773; --rule:#D3DAE1;
+  --steel:#2F5D8A; --steel-ink:#FFFFFF; --amber:#B07A06; --green:#2E7D5B; --brick:#A8432F;
+  --amber-bg:#FBF1DC; --green-bg:#E3F1EA; --brick-bg:#F7E4E0; --steel-bg:#E4ECF4;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Source Serif 4",Georgia,serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 var(--sans)}
+a{color:var(--steel)}
+header{padding:20px 24px 0;max-width:1240px;margin:0 auto;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+header h1{font-size:22px;font-weight:600;margin:0;letter-spacing:-.01em}
+header nav a{margin-left:16px;font-size:14px}
+#kb{font-size:13px;color:var(--muted);max-width:1240px;margin:4px auto 0;padding:0 24px}
+main{max-width:1240px;margin:0 auto;padding:16px 24px 48px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px}
+@media (max-width:900px){main{grid-template-columns:minmax(0,1fr);padding:12px 16px 40px}header{padding:16px 16px 0}#kb{padding:0 16px}header nav a{margin:0 16px 0 0}}
+.tablewrap{overflow-x:auto}
+section{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:18px 20px}
+h2{font-size:15px;font-weight:600;margin:0 0 10px}
+textarea{width:100%;min-height:96px;font:inherit;padding:10px 12px;border:1px solid var(--rule);border-radius:4px;resize:vertical;background:#fff;color:var(--ink)}
+textarea:focus,button:focus-visible,input:focus{outline:2px solid var(--steel);outline-offset:2px}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+button{font:inherit;font-weight:500;border-radius:4px;border:1px solid var(--steel);padding:8px 14px;cursor:pointer;background:var(--steel);color:var(--steel-ink)}
+button.ghost{background:transparent;color:var(--steel)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.examples{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.examples button{background:transparent;color:var(--ink);border:1px solid var(--rule);text-align:left;font-weight:400;font-size:14px;padding:7px 10px}
+.examples button:hover{border-color:var(--steel)}
+.route{font-size:14px;margin:0 0 12px;padding:10px 12px;background:var(--steel-bg);border-radius:4px}
+.route strong{font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th{font-weight:500;color:var(--muted);text-align:left;border-bottom:1px solid var(--rule);padding:6px 6px}
+td{border-bottom:1px solid var(--rule);padding:8px 6px;vertical-align:top}
+tr.fresh td{animation:land .5s ease-out}
+@keyframes land{from{background:var(--amber-bg)}to{background:transparent}}
+@media (prefers-reduced-motion:reduce){tr.fresh td{animation:none}}
+.pill{display:inline-block;font-size:12px;font-weight:500;padding:1px 8px;border-radius:10px;white-space:nowrap}
+.pending{background:var(--amber-bg);color:var(--amber)} .completed{background:var(--green-bg);color:var(--green)}
+.insufficient{background:var(--brick-bg);color:var(--brick)}
+.log{margin-top:14px;font-size:13px;color:var(--muted);max-height:180px;overflow:auto;border-top:1px solid var(--rule);padding-top:8px}
+.log div{padding:1px 0}
+.answer h3{font-family:var(--serif);font-size:24px;line-height:1.25;font-weight:600;margin:0 0 10px;letter-spacing:-.005em}
+.answer .summary{font-family:var(--serif);font-size:17px;line-height:1.6;max-width:68ch}
+.meter{display:flex;align-items:center;gap:10px;margin:10px 0 16px;font-size:14px}
+.meter .bar{width:160px;height:8px;background:var(--rule);border-radius:4px;overflow:hidden}
+.meter .bar i{display:block;height:100%}
+ol.actions{padding-left:22px;margin:0}
+ol.actions li{margin:0 0 14px;max-width:72ch}
+ol.actions .act{font-weight:600}
+ol.actions .meta{font-size:13px;color:var(--muted)}
+.cite{font-size:12px;color:var(--steel);background:var(--steel-bg);border-radius:3px;padding:0 5px;margin-right:4px;white-space:nowrap}
+details{border-top:1px solid var(--rule);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+.agent-q{font-size:13px;color:var(--muted)}
+.finding{margin:8px 0;max-width:72ch}
+.ftype{font-size:12px;color:var(--muted)}
+.unc{font-size:13px;color:var(--muted);margin-top:6px}
+ul.sources{padding-left:18px;font-size:13px}
+.human{border:2px solid var(--amber);background:var(--amber-bg);border-radius:6px;padding:14px;margin-bottom:16px}
+.human input{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--rule);border-radius:4px;margin-top:8px}
+.empty{color:var(--muted)}
+.lists h4{font-size:14px;margin:14px 0 4px}
+.lists ul{margin:0;padding-left:18px;max-width:72ch}
+</style>
+</head>
+<body>
+<header>
+  <h1>Consulting coworker</h1>
+  <nav><a href="/">Home</a><a href="/checkout">Checkout recommender</a><a href="/docs">API</a></nav>
+</header>
+<div id="kb">Loading knowledge base status…</div>
+<main>
+  <div>
+    <section>
+      <h2>Ask the manager agent</h2>
+      <textarea id="q" placeholder="Describe the customer's problem or question"></textarea>
+      <div class="row">
+        <button id="ask">Ask</button>
+        <button id="cancel" class="ghost" disabled>Cancel</button>
+      </div>
+    </section>
+    <section style="margin-top:20px">
+      <h2>Task and progress ledger</h2>
+      <p class="route" id="route" hidden></p>
+      <div class="tablewrap"><table><thead><tr><th>Task</th><th>Agent</th><th>Round</th><th>Status</th><th>Confidence</th></tr></thead>
+      <tbody id="ledger"><tr><td colspan="5" class="empty">Tasks appear here as the manager routes the question.</td></tr></tbody></table></div>
+      <div class="log" id="log" aria-live="polite"></div>
+    </section>
+    <section style="margin-top:20px">
+      <h2>Example questions</h2>
+      <div class="examples" id="examples" style="margin-top:0"></div>
+    </section>
+  </div>
+  <section class="answer" id="answer" aria-live="polite">
+    <p class="empty">The consolidated recommendation, with evidence and confidence, appears here.</p>
+  </section>
+</main>
+<script>
+const EXAMPLES = [
+  "Our Cisco enterprise router is experiencing intermittent connectivity failures. Which replacement parts should we order, and what actions should we take to prevent future outages?",
+  "Which Agilent instrument best meets our pathology lab's need for whole-slide imaging?",
+  "What are the financial, competitive, and operational risks associated with Cisco and Agilent?",
+  "List major food insecurity reasons in 2023 from the State of Food Security and Nutrition in the World report.",
+  "Explain malnutrition in war zones.",
+  "Explain the impact of increased prices on food security.",
+  "How many recruiting phase 3 diabetes trials are there, and who sponsors them?",
+  "We want to standardize on Cisco edge routers. What are Cisco's financial risks, and which technology investments could improve food security outcomes for our CSR program?"
+];
+const $ = id => document.getElementById(id);
+let current = null, timer = null, lastSeq = 0, seenTasks = new Set();
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pct = x => x == null ? "–" : Math.round(x * 100) + "%";
+const levelColor = c => c >= .7 ? "var(--green)" : c >= .45 ? "var(--amber)" : "var(--brick)";
+
+EXAMPLES.forEach(t => { const b = document.createElement("button"); b.textContent = t; b.onclick = () => { $("q").value = t; ask(); }; $("examples").appendChild(b); });
+
+fetch("/api/v1/consult/status").then(r => r.json()).then(s => {
+  const kb = s.knowledge_base;
+  $("kb").textContent = kb.built
+    ? `Knowledge base: ${Object.entries(kb.indexes).map(([k, v]) => `${k} ${v.chunks.toLocaleString()}`).join(", ")} passages · retrieval ${kb.retrieval_mode} · models ${s.provider_mode === "mock" ? "offline (extractive answers)" : s.models.primary}`
+    : `Knowledge base not built yet. Run: ${kb.hint}`;
+}).catch(() => { $("kb").textContent = "Could not reach the API."; });
+
+async function api(path, opts) {
+  const r = await fetch(path, {headers: {"content-type": "application/json"}, ...opts});
+  const body = await r.json();
+  if (!r.ok) throw new Error(body.detail ? JSON.stringify(body.detail) : r.statusText);
+  return body;
+}
+
+async function ask() {
+  const question = $("q").value.trim();
+  if (question.length < 3) { $("q").focus(); return; }
+  clearInterval(timer); lastSeq = 0; seenTasks = new Set();
+  $("log").innerHTML = ""; $("route").hidden = true;
+  $("ledger").innerHTML = `<tr><td colspan="5" class="empty">Manager is detecting intent…</td></tr>`;
+  $("answer").innerHTML = `<p class="empty">Working…</p>`;
+  $("ask").disabled = true;
+  try {
+    const res = await api("/api/v1/consult", {method: "POST", body: JSON.stringify({question})});
+    current = res.execution_id; $("cancel").disabled = false;
+    render(res); timer = setInterval(poll, 800);
+  } catch (e) { $("answer").innerHTML = `<p>Could not start: ${esc(e.message)}</p>`; $("ask").disabled = false; }
+}
+
+async function poll() {
+  if (!current) return;
+  try {
+    const [res, events] = await Promise.all([api(`/api/v1/consult/${current}`), api(`/api/v1/consult/${current}/events?after=${lastSeq}`)]);
+    events.forEach(({event: e}) => {
+      lastSeq = Math.max(lastSeq, e.sequence);
+      if (["stage.started", "stage.completed", "routing.decision", "qa.result", "security.flag", "workflow.awaiting_input", "workflow.completed", "workflow.failed"].includes(e.type)) {
+        const d = document.createElement("div");
+        d.textContent = `${e.timestamp.slice(11, 19)}  ${e.type.replace(".", " ")}  ${e.stage || ""} ${e.message || ""}`;
+        $("log").appendChild(d); $("log").scrollTop = 1e9;
+      }
+    });
+    render(res);
+  } catch (e) { /* transient */ }
+}
+
+function render(res) {
+  const r = res.routing;
+  if (r) {
+    $("route").hidden = false;
+    $("route").innerHTML = `<strong>Intent:</strong> ${esc(r.intent_category.replaceAll("_", " "))} · <strong>Routed to:</strong> ${r.tasks.map(t => esc(t.agent.replaceAll("_", " "))).join(", ") || "no agent"}${r.is_cross_domain ? " (cross-domain)" : ""}`;
+  }
+  const tasks = (res.ledger && res.ledger.tasks) || [];
+  if (tasks.length) {
+    $("ledger").innerHTML = tasks.map(t => {
+      const done = res.agent_results[t.task_id];
+      const status = done ? (done.answer.insufficient_evidence ? "insufficient" : "completed") : "pending";
+      const conf = done ? done.uncertainty.final_confidence : null;
+      const fresh = !seenTasks.has(t.task_id + status); seenTasks.add(t.task_id + status);
+      return `<tr class="${fresh ? "fresh" : ""}"><td>${t.task_id}</td><td>${esc(t.agent.replace("_", " "))}</td><td>${t.round}</td><td><span class="pill ${status}">${status}</span></td><td>${pct(conf)}</td></tr>`;
+    }).join("");
+  }
+  if (res.status === "awaiting_input") return renderHuman(res);
+  if (["completed", "failed", "cancelled", "rejected"].includes(res.status)) {
+    clearInterval(timer); $("ask").disabled = false; $("cancel").disabled = true;
+    if (res.result) renderAnswer(res); else $("answer").innerHTML = `<p>Workflow ${res.status}. ${esc(res.error && res.error.message)}</p>`;
+  }
+}
+
+function renderHuman(res) {
+  clearInterval(timer);
+  const it = res.pending_interrupt;
+  $("answer").innerHTML = `<div class="human"><h2>The manager needs your input</h2>${it.questions.map(q => `<p>${esc(q)}</p>`).join("")}
+    <label for="ha" class="ftype">Your answer</label><input id="ha" autocomplete="off"><div class="row"><button id="send">Send answer</button></div></div>`;
+  $("ha").focus();
+  $("send").onclick = async () => {
+    const answer = $("ha").value.trim(); if (!answer) return;
+    const r2 = await api(`/api/v1/consult/${current}/resume`, {method: "POST", body: JSON.stringify({payload: {type: it.type, answer}})});
+    $("answer").innerHTML = `<p class="empty">Working…</p>`; render(r2); timer = setInterval(poll, 800);
+  };
+}
+
+function cites(ids) { return (ids || []).map(i => `<span class="cite">${esc(i)}</span>`).join(""); }
+
+function renderAnswer(res) {
+  const a = res.result.answer, q = res.result.quality;
+  const actions = [...a.next_actions].sort((x, y) => x.priority - y.priority).map(n => `
+    <li><div class="act">${esc(n.action)}</div><div>${esc(n.why)}</div>
+    <div class="meta">Measure: ${esc(n.metric)} → ${esc(n.target)} (${esc(n.timeframe)}) · owner ${esc(n.owner)} · ${esc(n.claim_type)}, confidence ${pct(n.confidence)}</div>
+    <div>${cites(n.evidence_ids)}</div></li>`).join("");
+  const lists = [["Cross-domain insights", a.cross_domain_insights], ["Confirmed facts", a.confirmed_facts], ["Hypotheses (unconfirmed)", a.hypotheses], ["Risks", a.risks], ["Missing information", a.missing_information]]
+    .filter(([, v]) => v && v.length).map(([h, v]) => `<h4>${h}</h4><ul>${v.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`).join("");
+  const agents = Object.entries(res.agent_results).map(([tid, r]) => `
+    <details><summary>${esc(r.agent.replace("_", " "))} agent · ${tid} · confidence ${pct(r.uncertainty.final_confidence)} (${r.uncertainty.level})</summary>
+    <p class="agent-q">${esc(r.instruction)}</p><p>${esc(r.answer.answer)}</p>
+    ${r.answer.findings.map(f => `<div class="finding">${esc(f.statement)} <span class="ftype">${esc(f.claim_type)}</span> ${cites(f.evidence_ids)}</div>`).join("")}
+    ${r.answer.recommended_items.length ? `<h4>Recommended</h4><ul>${r.answer.recommended_items.map(i => `<li>${esc(i.name)}${i.match_score != null ? ` · match ${pct(i.match_score)}` : ""} — ${esc(i.reason)}</li>`).join("")}</ul>` : ""}
+    <div class="unc">Retrieval strength ${pct(r.uncertainty.retrieval_strength)} · groundedness ${pct(r.uncertainty.groundedness)} · model confidence ${pct(r.uncertainty.model_confidence)} · ${r.uncertainty.evidence_cited} of ${r.uncertainty.evidence_retrieved} passages cited${r.uncertainty.fabricated_citations_removed ? ` · ${r.uncertainty.fabricated_citations_removed} invented citation(s) removed` : ""}</div>
+    </details>`).join("");
+  const sources = res.result.citations.map(c => `<li><span class="cite">${esc(c.evidence_id)}</span>${esc(c.title)}${c.page ? `, p.${c.page}` : ""}</li>`).join("");
+  $("answer").innerHTML = `
+    <h3>${esc(a.headline)}</h3>
+    <div class="meter"><div class="bar"><i style="width:${Math.round(q.overall_confidence * 100)}%;background:${levelColor(q.overall_confidence)}"></i></div>
+      <span>Confidence ${pct(q.overall_confidence)} (${q.confidence_level}) · ${q.domains_consulted.length} agent(s) · ${pct(q.actions_with_evidence)} of actions cite evidence</span></div>
+    <p class="summary">${esc(a.summary)}</p>
+    ${a.uncertainty_note ? `<p class="ftype">${esc(a.uncertainty_note)}</p>` : ""}
+    <h2 style="margin-top:18px">What to do next</h2><ol class="actions">${actions || "<li>No action recommended.</li>"}</ol>
+    <div class="lists">${lists}</div>
+    <h2 style="margin-top:18px">Specialist agents</h2>${agents || `<p class="empty">No agent was consulted.</p>`}
+    <h2 style="margin-top:18px">Sources</h2><ul class="sources">${sources || "<li>None</li>"}</ul>`;
+}
+
+$("ask").onclick = ask;
+$("q").addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask(); });
+$("cancel").onclick = async () => { if (current) { await api(`/api/v1/consult/${current}/cancel`, {method: "POST"}).catch(() => {}); poll(); } };
+</script>
+</body>
+</html>

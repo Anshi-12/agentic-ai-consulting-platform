@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic consulting platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F3F5F7;--sheet:#fff;--ink:#17212B;--muted:#5B6773;--rule:#D3DAE1;--steel:#2F5D8A;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--serif:"Source Serif 4",Georgia,serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--sans)}
+main{max-width:860px;margin:0 auto;padding:56px 24px}
+h1{font-family:var(--serif);font-size:40px;line-height:1.15;font-weight:600;margin:0 0 14px;letter-spacing:-.01em;max-width:20ch}
+p.lead{font-family:var(--serif);font-size:19px;color:var(--muted);max-width:60ch;margin:0 0 36px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:700px){.grid{grid-template-columns:1fr}h1{font-size:32px}}
+a.card{display:block;background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:20px;color:inherit;text-decoration:none}
+a.card:hover,a.card:focus-visible{border-color:var(--steel);outline:none}
+a.card h2{font-size:18px;margin:0 0 6px;color:var(--steel)}
+a.card p{margin:0;color:var(--muted);font-size:15px}
+pre{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:16px;font-size:13px;overflow:auto;margin-top:36px;line-height:1.4}
+footer{margin-top:28px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <h1>An AI consulting coworker for enterprise decisions</h1>
+  <p class="lead">A manager agent routes each customer question to technology, clinical, SEC and corporate-responsibility specialists, then turns their cited findings into next actions you can measure.</p>
+  <div class="grid">
+    <a class="card" href="/consult"><h2>Consulting coworker</h2><p>Ask a question; watch the task ledger fill as agents retrieve evidence; get recommendations with sources and confidence.</p></a>
+    <a class="card" href="/checkout"><h2>Checkout recommender</h2><p>Market basket suggestions that update with every item added, and stay silent when there is no real pattern.</p></a>
+  </div>
+<pre>
+                    Management Consulting Manager Agent
+          intent detection · routing · task ledger · "resolved?" loop
+                  │            │            │                │
+             Technology     Clinical       SEC      Corporate Responsibility
+           Cisco·IBM·Google Agilent·PDFs  10-K filings   Food security (SOFI)
+                  └────────────┴─────┬──────┴────────────────┘
+                     consulting recommendation: evidence, insights, next actions
+</pre>
+  <footer>CMPE 256 Data Science Hackathon prototype · <a href="/docs">API reference</a></footer>
+</main>
+</body>
+</html>

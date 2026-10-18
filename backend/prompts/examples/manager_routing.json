@@ -1,0 +1,62 @@
+{
+  "family": "manager_routing",
+  "task": "manager_plan",
+  "schema": "RoutingPlan",
+  "note": "Synthetic examples for intent detection and routing. No real client data.",
+  "examples": [
+    {
+      "id": "route-tech-troubleshoot",
+      "industry": "High technology - enterprise networking",
+      "difficulty": "easy",
+      "input": {"question": "Our branch office Cisco ISR keeps dropping VPN tunnels every few hours. What should we replace?", "available_agents": ["technology", "clinical", "sec", "corporate_responsibility"]},
+      "output": {
+        "intent": "Troubleshoot recurring VPN tunnel drops on a Cisco branch router and identify replacement components",
+        "intent_category": "troubleshooting",
+        "tasks": [{"agent": "technology", "instruction": "Identify likely causes of recurring VPN/IPsec tunnel drops on Cisco ISR branch routers, compatible replacement or upgrade options, and diagnostics needed before ordering parts.", "search_queries": ["Cisco ISR IPsec VPN tunnel throughput", "Cisco branch router replacement edge platform", "Cisco router interfaces memory modules"], "company": "Cisco", "rationale": "Hardware/network troubleshooting is the Technology agent's domain"}],
+        "is_cross_domain": false,
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "plan": ["Technology agent retrieves Cisco router documentation", "Separate confirmed faults from hypotheses", "Consolidate into remediation and procurement actions"],
+        "known_facts": ["Device: Cisco ISR at a branch office", "Symptom: VPN tunnels drop every few hours"],
+        "confidence": 0.85
+      }
+    },
+    {
+      "id": "route-cross-domain",
+      "industry": "Diagnostics - laboratory equipment vendor evaluation",
+      "difficulty": "hard",
+      "input": {"question": "We plan a five-year digital pathology rollout with Agilent. Is the vendor financially stable, and which scanner fits a high-volume lab?", "available_agents": ["technology", "clinical", "sec", "corporate_responsibility"]},
+      "output": {
+        "intent": "Select a digital pathology scanner for a high-volume lab and assess Agilent's financial stability as a long-term vendor",
+        "intent_category": "cross_domain",
+        "tasks": [
+          {"agent": "clinical", "instruction": "Recommend Agilent digital pathology scanners suitable for high-volume whole-slide imaging and list requirements to confirm.", "search_queries": ["Agilent whole-slide imaging scanner pathology", "digital pathology scanner throughput"], "company": "Agilent", "rationale": "Instrument selection"},
+          {"agent": "sec", "instruction": "Summarize Agilent's financial position, revenue trends and key risk factors relevant to a five-year vendor commitment.", "search_queries": ["Agilent revenue segments", "Agilent risk factors", "Agilent liquidity cash"], "company": "Agilent", "rationale": "Vendor financial risk comes from SEC filings"}
+        ],
+        "is_cross_domain": true,
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "plan": ["Clinical and SEC agents run in parallel", "Manager checks both answers cover fit and stability", "Consolidate into a vendor decision with risks"],
+        "known_facts": ["Horizon: five years", "Lab profile: high volume"],
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "route-unclear",
+      "industry": "Unspecified",
+      "difficulty": "ambiguous",
+      "input": {"question": "Which one should we buy?", "available_agents": ["technology", "clinical", "sec", "corporate_responsibility"]},
+      "output": {
+        "intent": "Unclear purchase decision with no product, domain or requirements stated",
+        "intent_category": "unclear",
+        "tasks": [],
+        "is_cross_domain": false,
+        "needs_clarification": true,
+        "clarifying_questions": ["What kind of product are you choosing between (for example network equipment or laboratory instruments)?", "What problem should it solve, and what requirements or constraints apply (budget, volume, existing systems)?"],
+        "plan": ["Wait for clarification before routing"],
+        "known_facts": [],
+        "confidence": 0.2
+      }
+    }
+  ]
+}
