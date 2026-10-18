@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: consulting
+      POSTGRES_USER: consulting
+      POSTGRES_PASSWORD: consulting
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U consulting -d consulting"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  central-api:
+    build:
+      context: ..
+      dockerfile: group3/Dockerfile
+    working_dir: /workspace
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000
+    ports: ["8000:8000"]
+    environment:
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-development}
+      JWT_EXPIRES_MINUTES: ${JWT_EXPIRES_MINUTES:-60}
+      DATABASE_URL: postgresql+psycopg://consulting:consulting@postgres:5432/consulting
+      GROUP2_API_URL: http://host.docker.internal:8001
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  dashboard:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports: ["3000:3000"]
