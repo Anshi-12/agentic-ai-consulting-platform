@@ -1,0 +1,113 @@
+{
+  "family": "executive_summary",
+  "task": "report_synthesis",
+  "schema": "ReportOutput",
+  "note": "Synthetic examples. No real client data.",
+  "examples": [
+    {
+      "id": "es-bank-medium",
+      "industry": "Financial services - regional bank",
+      "difficulty": "medium",
+      "input": {
+        "key_question": "How should the bank resize its branch network as digital adoption grows?",
+        "recommendations": [{"id": "R1", "title": "Consolidate 18 low-traffic branches into nearby hubs", "owner": "COO", "evidence_ids": ["EX-B1"], "confidence": 0.8}],
+        "evaluations": [{"hypothesis_id": "H1", "verdict": "supported", "evidence_ids": ["EX-B1"], "confidence": 0.8}],
+        "financial_summary": "Consolidation NPV $22M (calculated from estimates).",
+        "qa_status": "pass",
+        "evidence": [{"evidence_id": "EX-B1", "source": "Branch traffic data (synthetic)", "title": "Branch transactions", "content": "18 branches handle under 40 teller transactions per day, down 55% in four years.", "source_type": "dataset", "reliability": 0.9}]
+      },
+      "output": {
+        "executive_summary": {
+          "headline": "Consolidate 18 low-traffic branches to fund digital growth while keeping 95% of customers within a 10-minute drive of a hub.",
+          "situation": "Teller transactions at 18 branches fell 55% in four years to under 40 per day [EX-B1].",
+          "complication": "Fixed branch costs are unchanged while volume migrates to digital channels.",
+          "resolution": "Consolidate the 18 branches into nearby hubs; the calculated NPV is $22M based on management estimates.",
+          "key_recommendations": ["Consolidate 18 low-traffic branches into nearby hubs"]
+        },
+        "detailed_findings": [{"title": "Branch traffic has collapsed at 18 sites", "finding": "These branches handle under 40 teller transactions a day.", "evidence_ids": ["EX-B1"], "claim_type": "fact", "confidence": 0.9}],
+        "strategic_recommendations": [{"id": "R1", "title": "Consolidate 18 low-traffic branches into nearby hubs", "rationale": "Traffic collapse [EX-B1]; positive calculated NPV.", "option_id": "OPT1", "priority": 1, "owner": "COO", "time_horizon": "3-12 months", "measurable_outcomes": [{"metric": "Branch operating cost", "target": "-18%", "timeframe": "12 months"}], "evidence_ids": ["EX-B1"], "claim_type": "fact", "confidence": 0.8, "low_confidence_flag": false}],
+        "implementation_roadmap": [{"phase": "Plan and communicate", "timeframe": "Months 0-3", "actions": ["Select hub pairings", "Notify regulators and customers"], "owner": "COO", "milestones": ["Regulatory notices filed"]}],
+        "risk_register": [{"id": "RK1", "risk": "Deposit attrition from affected customers", "likelihood": "medium", "impact": "medium", "mitigation": "Proactive outreach and digital onboarding", "owner": "Head of Retail"}],
+        "presentation_slides": [{"title": "Recommendation", "bullets": ["Consolidate 18 branches", "NPV $22M (calculated from estimates)"], "speaker_notes": "Lead with customer access safeguards."}],
+        "citations": [{"evidence_id": "EX-B1", "source": "Branch traffic data (synthetic)", "title": "Branch transactions"}],
+        "assumptions": ["Hub capacity can absorb transferred volume"],
+        "limitations": ["Customer drive-time analysis based on branch addresses, not customer addresses"]
+      }
+    },
+    {
+      "id": "es-apparel-hard",
+      "industry": "Retail - apparel",
+      "difficulty": "hard",
+      "input": {
+        "key_question": "How can the retailer restore gross margin while protecting loyal customers?",
+        "recommendations": [
+          {"id": "R1", "title": "Cut promotion frequency and target offers to price-sensitive segments", "owner": "CCO", "evidence_ids": ["EX-A1", "EX-A2"], "confidence": 0.78},
+          {"id": "R2", "title": "Pilot a resale program", "owner": "Head of Strategy", "evidence_ids": [], "confidence": 0.4}
+        ],
+        "evaluations": [{"hypothesis_id": "H1", "verdict": "supported", "evidence_ids": ["EX-A1", "EX-A2"], "confidence": 0.78}],
+        "financial_summary": "Promotion discipline NPV $5.7M (calculated from estimates).",
+        "qa_status": "escalated_approved_with_caveats",
+        "evidence": [
+          {"evidence_id": "EX-A1", "source": "Margin bridge (synthetic)", "title": "Margin decline", "content": "Markdowns explain 4 of the 6.5-point margin decline.", "source_type": "dataset", "reliability": 0.9},
+          {"evidence_id": "EX-A2", "source": "Survey (synthetic)", "title": "Segments", "content": "Loyal customers are not price sensitive.", "source_type": "research", "reliability": 0.75}
+        ]
+      },
+      "output": {
+        "executive_summary": {
+          "headline": "Restore margin by reducing blanket promotions and targeting offers, protecting loyal customers who are not price sensitive.",
+          "situation": "Markdowns explain 4 of the 6.5-point gross margin decline [EX-A1].",
+          "complication": "Blanket promotions reward loyal customers who would buy at full price [EX-A2].",
+          "resolution": "Reduce promotion frequency and target offers by segment (calculated NPV $5.7M from estimates). Treat resale as an unvalidated hypothesis to pilot.",
+          "key_recommendations": ["Cut promotion frequency and target offers by segment", "Pilot a resale program (low confidence)"]
+        },
+        "detailed_findings": [
+          {"title": "Markdowns drive most of the margin decline", "finding": "4 of 6.5 points.", "evidence_ids": ["EX-A1"], "claim_type": "fact", "confidence": 0.9},
+          {"title": "Resale demand is unverified", "finding": "No evidence was found on resale demand.", "evidence_ids": [], "claim_type": "hypothesis", "confidence": 0.35}
+        ],
+        "strategic_recommendations": [
+          {"id": "R1", "title": "Cut promotion frequency and target offers by segment", "rationale": "Markdown-driven decline [EX-A1]; loyal customers not price sensitive [EX-A2].", "option_id": "OPT1", "priority": 1, "owner": "CCO", "time_horizon": "0-3 months", "measurable_outcomes": [{"metric": "Gross margin", "target": "+2 points", "timeframe": "12 months"}], "evidence_ids": ["EX-A1", "EX-A2"], "claim_type": "fact", "confidence": 0.78, "low_confidence_flag": false},
+          {"id": "R2", "title": "Pilot a resale program", "rationale": "Hypothesis only; no supporting evidence.", "option_id": "OPT2", "priority": 2, "owner": "Head of Strategy", "time_horizon": "3-12 months", "measurable_outcomes": [{"metric": "Pilot participation", "target": "Defined before launch", "timeframe": "6 months"}], "evidence_ids": [], "claim_type": "hypothesis", "confidence": 0.4, "low_confidence_flag": true}
+        ],
+        "implementation_roadmap": [
+          {"phase": "Quick wins", "timeframe": "Months 0-3", "actions": ["Reset promotion calendar", "Launch segment-targeted offers"], "owner": "CCO", "milestones": ["Promotion days below 25%"]},
+          {"phase": "Test and learn", "timeframe": "Months 3-9", "actions": ["Design and run resale pilot"], "owner": "Head of Strategy", "milestones": ["Go/no-go decision"]}
+        ],
+        "risk_register": [{"id": "RK1", "risk": "Occasional buyers defect", "likelihood": "medium", "impact": "medium", "mitigation": "Targeted offers and regional stop-loss triggers", "owner": "CCO"}],
+        "presentation_slides": [{"title": "What we recommend", "bullets": ["Targeted promotions (high confidence)", "Resale pilot (low confidence, needs evidence)"], "speaker_notes": "Note QA escalation and reviewer caveats."}],
+        "citations": [{"evidence_id": "EX-A1", "source": "Margin bridge (synthetic)", "title": "Margin decline"}, {"evidence_id": "EX-A2", "source": "Survey (synthetic)", "title": "Segments"}],
+        "assumptions": ["Survey segments map to transaction data segments"],
+        "limitations": ["QA escalated this deliverable; the reviewer approved with caveats", "Resale recommendation is not evidence-backed"]
+      }
+    },
+    {
+      "id": "es-insufficient-evidence",
+      "industry": "Healthcare - medical supplies distribution",
+      "difficulty": "ambiguous",
+      "input": {
+        "key_question": "Why is revenue flat despite growing order volume?",
+        "recommendations": [{"id": "R1", "title": "Collect contract-level pricing data before deciding on pricing actions", "owner": "CFO", "evidence_ids": ["EX-M2"], "confidence": 0.4}],
+        "evaluations": [{"hypothesis_id": "H1", "verdict": "inconclusive", "evidence_ids": ["EX-M2"], "confidence": 0.4}],
+        "financial_summary": "Financial inputs not available; no metrics calculated.",
+        "qa_status": "pass_with_flags",
+        "evidence": [{"evidence_id": "EX-M2", "source": "Order extract (synthetic)", "title": "Order volume", "content": "Order lines grew 6% while revenue grew 1%.", "source_type": "dataset", "reliability": 0.85}]
+      },
+      "output": {
+        "executive_summary": {
+          "headline": "Evidence is not yet sufficient to recommend pricing actions; close the contract-data gap first.",
+          "situation": "Order lines grew 6% while revenue grew 1% [EX-M2].",
+          "complication": "This gap could reflect price erosion or mix shift; available evidence cannot distinguish them, and no financial model was supplied.",
+          "resolution": "Gather contract-level pricing data within four weeks, then re-run the analysis.",
+          "key_recommendations": ["Collect contract-level pricing data before deciding on pricing actions"]
+        },
+        "detailed_findings": [{"title": "Revenue lags volume", "finding": "Order lines +6% vs revenue +1%.", "evidence_ids": ["EX-M2"], "claim_type": "fact", "confidence": 0.85}],
+        "strategic_recommendations": [{"id": "R1", "title": "Collect contract-level pricing data before deciding on pricing actions", "rationale": "Cause of the revenue gap is unresolved [EX-M2].", "option_id": null, "priority": 1, "owner": "CFO", "time_horizon": "0-3 months", "measurable_outcomes": [{"metric": "Contracts with price history captured", "target": "90%", "timeframe": "4 weeks"}], "evidence_ids": ["EX-M2"], "claim_type": "fact", "confidence": 0.4, "low_confidence_flag": true}],
+        "implementation_roadmap": [{"phase": "Data collection", "timeframe": "Weeks 0-4", "actions": ["Extract contract price history"], "owner": "CFO", "milestones": ["Dataset delivered"]}],
+        "risk_register": [{"id": "RK1", "risk": "Decision delay allows further price erosion", "likelihood": "medium", "impact": "medium", "mitigation": "Time-box data collection to four weeks", "owner": "CFO"}],
+        "presentation_slides": [{"title": "Where we are", "bullets": ["Revenue lags volume", "Cause not yet determined", "Data request issued"], "speaker_notes": "Be explicit that no financial quantification was possible."}],
+        "citations": [{"evidence_id": "EX-M2", "source": "Order extract (synthetic)", "title": "Order volume"}],
+        "assumptions": [],
+        "limitations": ["No financial inputs available; no ROI or NPV calculated", "Only three evidence sources available"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{"id": "p01", "domain": "technology", "need": "virtual router deployed in a public cloud with SD-WAN", "expected": "Catalyst 8000V"}
+{"id": "p02", "domain": "technology", "need": "high-throughput aggregation router with redundant route processors", "expected": "ASR 1000"}
+{"id": "p03", "domain": "technology", "need": "branch router with modular WAN interfaces and integrated services", "expected": "4000 Series"}
+{"id": "p04", "domain": "clinical", "need": "whole-slide imaging scanner for a pathology lab", "expected": "whole-slide|NanoZoomer"}
+{"id": "p05", "domain": "clinical", "need": "measure mitochondrial respiration and cell metabolism in real time", "expected": "Seahorse"}
+{"id": "p06", "domain": "clinical", "need": "automated special stains for histology", "expected": "Artisan|special stains"}
